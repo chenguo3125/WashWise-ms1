@@ -1,189 +1,293 @@
 import { useRouter } from 'expo-router';
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { db } from '../config/firebaseConfig';
+import {
+    Alert,
+    FlatList,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import { auth, db } from '../config/firebaseConfig';
 
 export default function MyLaundry() {
   const [machines, setMachines] = useState([]);
   const [selectedMachine, setSelectedMachine] = useState(null);
   const [duration, setDuration] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [finished, setFinished] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
+  const [activeSession, setActiveSession] = useState(null);
   const timerRef = useRef(null);
   const router = useRouter();
-
   const presetTimes = [30, 45, 60]; // in minutes
 
   useEffect(() => {
-    const fetchMachines = async () => {
-      const snapshot = await getDocs(collection(db, 'machines'));
-      const availability = snapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter(machine => machine.availability === true);
-      setMachines(availability);
-    };
-
     fetchMachines();
+    fetchSession();
   }, []);
 
-  useEffect(() => {
-    if (isRunning) {
-      timerRef.current = setInterval(() => {
-        setSecondsLeft(prev => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current);
-            setIsRunning(false);
-            setFinished(true);
-            updateMachineAvailability(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+  const fetchMachines = async () => {
+    const snapshot = await getDocs(collection(db, 'machines'));
+    const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setMachines(list);
+  };
+
+  const fetchSession = async () => {
+    const userId = auth.currentUser?.uid;
+    const q = query(
+      collection(db, 'laundrySessions'),
+      where('userId', '==', userId),
+      where('status', '==', 'running')
+    );
+
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const docRef = snapshot.docs[0];
+      const data = docRef.data();
+      const start = data.startTime.toMillis();
+      const now = Date.now();
+      const end = start + data.duration * 1000;
+      const secondsLeft = Math.max(0, Math.floor((end - now) / 1000));
+
+      setActiveSession({
+        id: docRef.id,
+        ...data,
+      });
+      setSessionId(docRef.id);
+      setSecondsLeft(secondsLeft);
     }
+  };
+
+  useEffect(() => {
+    if (!activeSession) return;
+    timerRef.current = setInterval(() => {
+      setSecondsLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          handleTimerEnd();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
     return () => clearInterval(timerRef.current);
-  }, [isRunning]);
+  }, [activeSession]);
 
-  const updateMachineAvailability = async (status) => {
-    if (!selectedMachine) return;
-    await updateDoc(doc(db, 'machines', selectedMachine.id), { available: status });
+  const handleTimerEnd = async () => {
+    if (activeSession?.id) {
+      await updateDoc(doc(db, 'laundrySessions', activeSession.id), { status: 'complete' });
+      await updateDoc(doc(db, 'machines', activeSession.machineId), { availability: true });
+    }
+    setActiveSession(null);
+    setSessionId(null);
+    setSecondsLeft(0);
+    fetchMachines();
   };
 
   const startLaundry = async () => {
-    if (!selectedMachine || selectedMachine.availability !== true || duration === 0) {
-      Alert.alert('Error', 'Please select an available machine and duration.');
+    if (!selectedMachine || duration === 0) {
+      Alert.alert('Error', 'Please select a machine and duration.');
       return;
     }
-
-    await updateMachineAvailability(false);
-    setSecondsLeft(duration);
-    setIsRunning(true);
-    setFinished(false);
-  };
-
-  const formatTime = (sec) => {
-    const minutes = Math.floor(sec / 60);
-    const seconds = sec % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  };
-
-  const handleCollect = () => {
+    const userId = auth.currentUser?.uid;
+    const sessionRef = await addDoc(collection(db, 'laundrySessions'), {
+      userId,
+      machineId: selectedMachine.id,
+      startTime: serverTimestamp(),
+      duration,
+      status: 'running',
+    });
+    await updateDoc(doc(db, 'machines', selectedMachine.id), {
+      availability: false,
+    });
     setSelectedMachine(null);
     setDuration(0);
-    setFinished(false);
-    setSecondsLeft(0);
+    setSessionId(sessionRef.id);
+    setSecondsLeft(duration);
+    setActiveSession({
+      id: sessionRef.id,
+      userId,
+      machineId: selectedMachine.id,
+      duration,
+    });
+    fetchMachines();
+  };
+
+  const formatTime = (seconds) => {
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>🧼 Start Your Laundry</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View>
+          <Text style={styles.heading}>My Laundry</Text>
 
-      {!isRunning && !finished && (
-        <>
-          <Text style={styles.subheading}>Select an Available Machine:</Text>
-          <FlatList
-            data={machines}
-            keyExtractor={(item) => item.id}
-            horizontal
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.machineCard,
-                  selectedMachine?.id === item.id && styles.selectedCard
-                ]}
-                onPress={() => setSelectedMachine(item)}
-              >
-                <Text style={styles.machineText}>{item.type} @ {item.location}</Text>
+          {activeSession ? (
+            <>
+              <Text style={styles.timer}>⏳ Time Remaining: {formatTime(secondsLeft)}</Text>
+              <TouchableOpacity style={styles.stopButton} onPress={handleTimerEnd}>
+                <Text style={styles.buttonText}>Collect</Text>
               </TouchableOpacity>
-            )}
-          />
+            </>
+          ) : (
+            <>
+              <Text style={styles.subheading}>Select a Machine:</Text>
+              <FlatList
+                data={machines.filter(m => m.availability)}
+                horizontal
+                keyExtractor={(item) => item.id}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => {
+                  const isSelected = selectedMachine?.id === item.id;
+                  return (
+                    <TouchableOpacity
+                      onPress={() => setSelectedMachine(item)}
+                      style={[
+                        styles.machineCard,
+                        isSelected && styles.selectedCard,
+                      ]}
+                    >
+                      <Text style={styles.machineText}>{item.type}{item.index}</Text>
+                      <Text style={styles.machineLocation}>📍 {item.location}</Text>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
 
-          <Text style={styles.subheading}>Select Duration:</Text>
-          <View style={styles.options}>
-            {presetTimes.map(mins => (
-              <TouchableOpacity
-                key={mins}
-                style={[styles.optionButton, duration === mins * 60 && styles.optionSelected]}
-                onPress={() => setDuration(mins * 60)}
-              >
-                <Text style={styles.optionText}>{mins} min</Text>
+              <Text style={styles.subheading}>Duration:</Text>
+              <View style={styles.options}>
+                {presetTimes.map(mins => (
+                  <TouchableOpacity
+                    key={mins}
+                    style={[
+                      styles.optionButton,
+                      duration === mins * 60 && styles.optionSelected,
+                    ]}
+                    onPress={() => setDuration(mins * 60)}
+                  >
+                    <Text style={styles.optionText}>{mins} min</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TouchableOpacity style={styles.startButton} onPress={startLaundry}>
+                <Text style={styles.buttonText}>Start</Text>
               </TouchableOpacity>
-            ))}
-          </View>
+            </>
+          )}
+        </View>
 
-          <TouchableOpacity style={styles.startButton} onPress={startLaundry}>
-            <Text style={styles.buttonText}>Start</Text>
+        <View style={styles.footer}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.backHint}>← Back to Home</Text>
           </TouchableOpacity>
-        </>
-      )}
-
-      {isRunning && (
-        <Text style={styles.timerText}>⏳ Time Left: {formatTime(secondsLeft)}</Text>
-      )}
-
-      {finished && (
-        <>
-          <Text style={styles.doneText}>🎉 Laundry Done!</Text>
-          <TouchableOpacity style={styles.collectButton} onPress={handleCollect}>
-            <Text style={styles.buttonText}>Collect</Text>
-          </TouchableOpacity>
-        </>
-      )}
-
-      <Text style={styles.backHint} onPress={() => router.back()}>
-        ← Back to Home
-      </Text>
-    </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f4f4f4' },
-  heading: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
-  subheading: { fontSize: 18, fontWeight: '500', marginVertical: 10 },
+  container: { flex: 1, backgroundColor: '#f2f4f8' },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    padding: 20,
+  },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
+  },
+  subheading: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginVertical: 12,
+    color: '#000',
+  },
   machineCard: {
-    backgroundColor: '#ddd',
-    padding: 12,
-    borderRadius: 10,
+    backgroundColor: '#e6e6e6',
+    padding: 14,
+    borderRadius: 12,
     marginHorizontal: 8,
+    width: 160,
+    alignItems: 'center',
   },
   selectedCard: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#6495ED',
   },
   machineText: {
-    color: 'white',
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
   },
-  options: { flexDirection: 'row', marginVertical: 20 },
-  optionButton: {
-    backgroundColor: '#bbb',
-    padding: 10,
+  machineLocation: {
+    fontSize: 13,
+    color: '#555',
+    marginVertical: 4,
+  },
+  timer: {
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: '600',
+    marginVertical: 20,
+    color: '#333',
+  },
+  stopButton: {
+    backgroundColor: '#D9534F',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 10,
-    marginHorizontal: 8,
+    alignSelf: 'center',
+  },
+  startButton: {
+    backgroundColor: '#28a745',
+    paddingVertical: 14,
+    borderRadius: 10,
+    marginBottom: 30,
+  },
+  options: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  optionButton: {
+    backgroundColor: '#ccc',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    marginHorizontal: 6,
   },
   optionSelected: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#4682B4',
   },
   optionText: {
     color: '#fff',
     fontWeight: '600',
   },
-  startButton: {
-    backgroundColor: '#28a745',
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginTop: 10,
+  buttonText: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '600',
+    textAlign: 'center',
   },
-  collectButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginTop: 10,
+  footer: {
+    alignItems: 'center',
+    marginTop: 20,
   },
-  buttonText: { color: 'white', textAlign: 'center', fontSize: 16 },
-  timerText: { fontSize: 28, fontWeight: 'bold', textAlign: 'center', marginTop: 40 },
-  doneText: { fontSize: 22, textAlign: 'center', marginTop: 40, fontWeight: '600' },
+  backHint: {
+    textAlign: 'center',
+    marginTop: 10,
+    color: '#007AFF',
+    fontSize: 16,
+  },
 });
