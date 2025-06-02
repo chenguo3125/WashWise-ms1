@@ -3,7 +3,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from '../components/commonStyles';
-import { auth } from '../config/firebaseConfig'; // Adjust path if needed
+import { auth } from '../config/firebaseConfig';
 
 const router = useRouter();
 
@@ -17,7 +17,7 @@ export default function LoginScreen() {
       const user = userCredential.user;
       console.log('Login successful:', user.email);
       Alert.alert('Welcome!', `Logged in as ${user.email}`);
-      router.replace('/home'); // or your main screen route
+      router.replace('/home');
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Login Failed', error.message);
