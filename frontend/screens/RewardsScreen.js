@@ -19,7 +19,7 @@ const rewardItems = [
 
 export default function RewardsScreen() {
   const router = useRouter();
-  const [points, setPoints] = useState(200); // Replace with actual user points from backend if needed
+  const [points, setPoints] = useState(200);
 
   const handleRedeem = (item) => {
     if (points < item.cost) {
