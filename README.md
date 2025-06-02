@@ -13,7 +13,7 @@ To deploy and test the WashWise app locally, follow these steps:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/WashWise-ms1.git
+git clone https://github.com/chenguo3125/WashWise-ms1
 cd WashWise-ms1
 ```
 
