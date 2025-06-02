@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 
 const mockPosts = [
-  { id: '1', title: 'Laundry Tips 💡', image: 'https://via.placeholder.com/300x200' },
-  { id: '2', title: 'Best Detergents', image: 'https://via.placeholder.com/300x400' },
-  { id: '3', title: 'Campus Hacks', image: 'https://via.placeholder.com/300x250' },
-  { id: '4', title: 'Fold Like a Pro', image: 'https://via.placeholder.com/300x300' },
-  { id: '5', title: 'Eco-friendly Tips 🌱', image: 'https://via.placeholder.com/300x180' },
+  { id: '1', title: 'Laundry Tips', image: '' },
+  { id: '2', title: 'Best Detergents', image: '' },
+  { id: '3', title: 'Campus Hacks', image: '' },
+  { id: '4', title: 'Fold Like a Pro', image: '' },
+  { id: '5', title: 'Eco-friendly Tips', image: '' },
 ];
 
 export default function Community() {
