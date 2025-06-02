@@ -1,18 +1,21 @@
-// HomeScreen.js with session-based timer display
 import { useRouter } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
     Alert,
-    ScrollView, StyleSheet, Text, TouchableOpacity, View
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { auth, db } from '../config/firebaseConfig';
 
 export default function HomeScreen() {
   const [userEmail, setUserEmail] = useState('');
   const [machines, setMachines] = useState([]);
-  const [timerText, setTimerText] = useState(null);
+  const [timers, setTimers] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,23 +47,26 @@ export default function HomeScreen() {
       );
 
       const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        const session = snapshot.docs[0];
+      const newTimers = [];
+
+      for (const session of snapshot.docs) {
         const data = session.data();
         const start = data.startTime.toMillis();
         const end = start + data.duration * 1000;
         const secondsLeft = Math.max(0, Math.floor((end - Date.now()) / 1000));
 
-        setTimerText(`⏳ Time Remaining: ${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, '0')}`);
+        newTimers.push({
+          id: session.id,
+          machineId: data.machineId,
+          remaining: secondsLeft,
+        });
 
         if (secondsLeft === 0) {
           await updateDoc(doc(db, 'laundrySessions', session.id), { status: 'complete' });
           await updateDoc(doc(db, 'machines', data.machineId), { availability: true });
-          setTimerText(null);
         }
-      } else {
-        setTimerText(null);
       }
+      setTimers(newTimers);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -72,6 +78,12 @@ export default function HomeScreen() {
     } catch (error) {
       Alert.alert('Logout error', error.message);
     }
+  };
+
+  const formatTime = (seconds) => {
+    const min = Math.floor(seconds / 60);
+    const sec = seconds % 60;
+    return `${min}:${String(sec).padStart(2, '0')}`;
   };
 
   return (
@@ -97,7 +109,18 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {timerText && <Text style={{ textAlign: 'center', marginVertical: 10 }}>{timerText}</Text>}
+        {timers.length > 0 && (
+          <View style={styles.timerScrollContainer}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {timers.map(timer => (
+                <View key={timer.id} style={styles.timerCard}>
+                  <Text style={styles.timerText}>⏳ Machine: {timer.machineId}</Text>
+                  <Text style={styles.timerText}>Time Left: {formatTime(timer.remaining)}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
 
         <View style={styles.navButtons}>
           <TouchableOpacity onPress={() => router.push('/myLaundry')} style={styles.button}>
@@ -204,6 +227,23 @@ const styles = StyleSheet.create({
   logoutText: {
     color: 'red',
     fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  timerScrollContainer: {
+    paddingVertical: 10,
+    marginBottom: 10,
+  },
+  timerCard: {
+    backgroundColor: '#fff',
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 10,
+    minWidth: 160,
+    elevation: 2,
+  },
+  timerText: {
+    fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
   },
