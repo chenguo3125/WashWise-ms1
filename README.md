@@ -1,50 +1,102 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# Welcome to WashWise
 
-## Get started
+This is an [Expo](https://expo.dev) mobile app created using [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).  
+The project is developed by **Guo Chen** and **Ziyi Xie**, aiming to improve the current digital laundry services in NUS dormitories.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Get Started
 
-2. Start the app
+To deploy and test the WashWise app locally, follow these steps:
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Clone the Repository
 
 ```bash
-npm run reset-project
+git clone https://github.com/your-username/WashWise_ZiyiXie.git
+cd WashWise_ZiyiXie
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Install Dependencies
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Start the App
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx expo start
+```
 
-## Join the community
+This will launch the Expo development server. You can open the app in a:
 
-Join our community of developers creating universal apps.
+- [Development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go) – scan the QR code shown in the terminal
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+## App Overview
+
+You can begin development and testing by editing files inside the `frontend/screens` directory.
+
+### Key Screens:
+
+- `HomeScreen.js` – main dashboard
+- `LoginScreen.js` and `RegisterScreen.js` – Firebase authentication
+- `MachinesFullList.js` – real-time machine status
+- `MyLaundry.js` – user's active laundry sessions
+- `RewardsScreen.js` – points & incentives
+- `Community.js` – feedback & nudges
+
+---
+
+## Test the App
+
+You can now test these key user flows:
+
+1. **Register** a new user
+2. **Log in** using the same credentials
+3. **Try**:
+   - Reserving a machine
+   - Viewing laundry status
+   - Earning or losing reward points
+   - Posting feedback in the community section
+
+---
+
+## Project Structure
+
+```
+WashWise_ZiyiXie/
+├── app/                    # (Optional, unused if not using expo-router)
+├── frontend/
+│   ├── assets/             # Images and fonts
+│   ├── components/         # Reusable components
+│   ├── config/             # Firebase configuration
+│   └── screens/            # Main screens (Login, Register, etc.)
+├── scripts/                # Dev scripts
+├── node_modules/           # Installed dependencies
+├── README.md               # This file
+├── package.json
+└── .gitignore, tsconfig.json, etc.
+```
+
+---
+
+## Contributors
+
+- Guo Chen
+- Ziyi Xie
+
+---
+
+## License
+
+MIT – feel free to use, contribute, and adapt with credit.
+
+---
+
+Enjoy building and testing WashWise!
