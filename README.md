@@ -60,17 +60,16 @@ You can now test these key user flows:
 1. **Register** a new user
 2. **Log in** using the same credentials
 3. **Try**:
-   - Reserving a machine
    - Viewing laundry status
-   - Earning or losing reward points
-   - Posting feedback in the community section
+   - Select and start a laundry session
+   - Redeeming prizes and losing reward points
 
 ---
 
 ## Project Structure
 
 ```
-WashWise_ZiyiXie/
+washwise-test2/
 ├── app/                    # (Optional, unused if not using expo-router)
 ├── frontend/
 │   ├── assets/             # Images and fonts
