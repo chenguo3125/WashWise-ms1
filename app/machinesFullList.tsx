@@ -38,7 +38,7 @@ export default function MachinesFullList() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>🧺 All Machines</Text>
+      <Text style={styles.heading}>Machine Status</Text>
 
       {machines.map(machine => (
         <View key={machine.id} style={styles.machineCard}>
