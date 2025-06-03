@@ -43,7 +43,7 @@ export default function MachinesFullList() {
       {machines.map(machine => (
         <View key={machine.id} style={styles.machineCard}>
           <Text style={styles.machineTitle}>Type: {machine.type}</Text>
-          <Text>Status: {machine.availability ? '✅ Available' : '❌ In Use'}</Text>
+          <Text>Status: {machine.availability ? 'Available' : 'In Use'}</Text>
           <Text>Location: {machine.location}</Text>
         </View>
       ))}
