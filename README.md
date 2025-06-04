@@ -10,20 +10,32 @@ The project is developed by **Guo Chen** and **Ziyi Xie**, aiming to improve the
 
 To deploy and test the WashWise app locally, follow these steps:
 
-### 1. Clone the Repository
+### 1. Install Node.js
+
+Visit the [Node.js official website](https://nodejs.org/) and download the latest version.
+
+During the installation process, make sure to check the option **"Add to PATH"**.
+
+### 2. Clone the Repository
 
 ```bash
 git clone https://github.com/chenguo3125/WashWise-ms1
 cd WashWise-ms1
 ```
 
-### 2. Install Dependencies
+### 3. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Start the App
+If `npm` is not working, modify the execution policy for the current user to `RemoteSigned`.
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+### 4. Start the App
 
 ```bash
 npx expo start
