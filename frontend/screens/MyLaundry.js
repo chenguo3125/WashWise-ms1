@@ -100,7 +100,7 @@ export default function MyLaundry() {
   const formatTime = (seconds) => {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;
-    return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    return seconds === 0 ? `Time is up!` : `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   };
 
   return (
@@ -150,7 +150,7 @@ export default function MyLaundry() {
                           style={styles.stopButton}
                           onPress={() => stopMachine(item.id)}
                         >
-                          <Text style={styles.buttonText}>Cancel</Text>
+                          <Text style={styles.buttonText}>{item.remaining === 0? 'Collect' : 'Cancel'}</Text>
                         </TouchableOpacity>
                       )}
                     </>
