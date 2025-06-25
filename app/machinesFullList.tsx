@@ -6,6 +6,7 @@ import { db } from '../frontend/config/firebaseConfig';
 
 type Machine = {
   id: string;
+  index: number
   type: string;
   availability: boolean;
   location: string;
@@ -41,9 +42,9 @@ export default function MachinesFullList() {
       <Text style={styles.heading}>Machine Status</Text>
 
       {machines.map(machine => (
-        <View key={machine.id} style={styles.machineCard}>
-          <Text style={styles.machineTitle}>Type: {machine.type}</Text>
-          <Text>Status: {machine.availability ? 'Available' : 'In Use'}</Text>
+        <View key={machine.id} style={machine.availability ? styles.machineCard1 : styles.machineCard2}>
+          <Text style={styles.machineTitle}>{machine.type}{machine.index}</Text>
+          <Text style={[styles.machineStatus, { color: machine.availability ? 'green' : 'red' }]}>Status: {machine.availability ? 'Available' : 'In Use'}</Text>
           <Text>Location: {machine.location}</Text>
         </View>
       ))}
@@ -66,8 +67,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  machineCard: {
-    backgroundColor: '#fff',
+  machineCard1: {
+    backgroundColor: '#A6DCC1',
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 10,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  machineCard2: {
+    backgroundColor: '#fbc9c9',
     padding: 16,
     marginBottom: 12,
     borderRadius: 10,
@@ -81,6 +93,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 4,
+  },
+  machineStatus: {
+    fontWeight: '500'
   },
   backHint: {
     marginTop: 30,

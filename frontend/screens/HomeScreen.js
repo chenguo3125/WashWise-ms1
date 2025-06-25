@@ -3,20 +3,35 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { auth, db } from '../config/firebaseConfig';
+import { registerForPushNotificationsAsync } from '../utils/notificationUtils';
 
 export default function HomeScreen() {
   const [userEmail, setUserEmail] = useState('');
   const [machines, setMachines] = useState([]);
   const [timers, setTimers] = useState([]);
   const router = useRouter();
+
+  useEffect(() => {
+  const saveTokenToFirestore = async () => {
+    const token = await registerForPushNotificationsAsync();
+    const user = auth.currentUser;
+
+    if (user && token) {
+      const userRef = doc(db, 'users', user.uid);
+      await setDoc(userRef, { expoPushToken: token }, { merge: true });
+    }
+  };
+
+  saveTokenToFirestore();
+}, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

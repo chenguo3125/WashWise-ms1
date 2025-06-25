@@ -1,16 +1,17 @@
+import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { getAuth } from 'firebase/auth';
 import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { db } from '../config/firebaseConfig';
 
@@ -20,8 +21,19 @@ export default function MyLaundry() {
   const [duration, setDuration] = useState(0);
   const router = useRouter();
   const timerRef = useRef(null);
-  const presetTimes = [30, 45, 60]; // in minutes
+  const presetTimes = [30, 45, 60];
   const user = getAuth().currentUser;
+  const scheduleLaundryReminder = async (machineName, duration) => {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Laundry Reminder',
+      body: `Your laundry on ${machineName} is done! Please collect it.`,
+    },
+    trigger: {
+      seconds: duration, 
+    },
+  });
+};
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
@@ -69,6 +81,7 @@ export default function MyLaundry() {
       endTime,
       userId: user.uid,
     });
+    await scheduleLaundryReminder(`${selectedMachine.type} ${selectedMachine.index}`, duration);
     
     setSelectedMachine(null);
     setDuration(0);
@@ -87,7 +100,7 @@ export default function MyLaundry() {
   const formatTime = (seconds) => {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;
-    return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    return seconds === 0 ? `Time is up!` : `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   };
 
   return (
@@ -116,7 +129,7 @@ export default function MyLaundry() {
                   ]}
                 >
                   <Text style={[styles.machineText, inUse && styles.strikethrough]}>
-                    {item.type} #{item.machineNumber}
+                    {item.type}{item.index}
                   </Text>
                   <Text style={[styles.machineLocation, inUse && styles.strikethrough]}>
                     📍 {item.location}
@@ -137,7 +150,7 @@ export default function MyLaundry() {
                           style={styles.stopButton}
                           onPress={() => stopMachine(item.id)}
                         >
-                          <Text style={styles.buttonText}>Cancel</Text>
+                          <Text style={styles.buttonText}>{item.remaining === 0? 'Collect' : 'Cancel'}</Text>
                         </TouchableOpacity>
                       )}
                     </>
