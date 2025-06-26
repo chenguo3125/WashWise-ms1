@@ -179,13 +179,13 @@ export default function MyLaundry() {
           <TouchableOpacity style={styles.startButton} onPress={startLaundry}>
             <Text style={styles.buttonText}>Start</Text>
           </TouchableOpacity>
-        </View>
 
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Text style={styles.backHint}>← Back to Home</Text>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Text style={styles.backText}>← Back to Home</Text>
           </TouchableOpacity>
+
         </View>
+        
       </ScrollView>
     </SafeAreaView>
   );
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#28a745',
     paddingVertical: 14,
     borderRadius: 10,
-    marginBottom: 30,
+    marginBottom: 0,
   },
   buttonText: {
     color: 'white',
@@ -282,14 +282,19 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  footer: {
+  backButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 20,
+    justifyContent: 'center',
+    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    elevation: 2,
   },
-  backHint: {
-    textAlign: 'center',
-    marginTop: 10,
-    color: '#007AFF',
+  backText: {
+    color: '#fff',
     fontSize: 16,
+    fontWeight: '600',
   },
 });
