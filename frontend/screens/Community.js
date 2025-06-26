@@ -55,6 +55,10 @@ export default function Community() {
         />
       )}
 
+      <TouchableOpacity onPress={() => router.push('/chat')} style={styles.button}>
+        <Text style={styles.buttonText}>Chat</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
         <Text style={styles.backText}>← Back to Home</Text>
       </TouchableOpacity>
@@ -63,15 +67,15 @@ export default function Community() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
+  container: { flex: 1, backgroundColor: '#fff', padding: 20},
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 10,
     color: '#333',
   },
-  list: { paddingHorizontal: 4 },
+  list: { paddingHorizontal: 4, marginBottom: 20, backgroundColor: '#fff' },
   card: {
     backgroundColor: '#f9f9f9',
     margin: 6,
@@ -80,9 +84,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   image: {
-    height: 150,
+    height: 130,
     borderRadius: 8,
-    marginBottom: 8,
+    marginBottom: 6,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -90,8 +94,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   title: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '500',
     color: '#444',
   },
   backButton: {
@@ -101,5 +105,19 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 16,
     color: '#007AFF',
+  },
+  button: {
+    marginTop: 25,
+    backgroundColor: '#4682B4',
+    padding: 10,
+    borderRadius: 12,
+    marginVertical: 6,
+    elevation: 2,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
