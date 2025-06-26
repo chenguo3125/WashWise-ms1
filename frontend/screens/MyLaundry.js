@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'space-between',
-    padding: 20,
+    padding: 25,
   },
   heading: {
     fontSize: 24,

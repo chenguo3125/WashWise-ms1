@@ -147,6 +147,9 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => router.push('/community')} style={styles.button}>
             <Text style={styles.buttonText}>Community</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/deposit')} style={styles.button}>
+            <Text style={styles.buttonText}>Deposit</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f2f4f8',
-    padding: 20,
+    padding: 25,
     justifyContent: 'space-between',
   },
   content: {
@@ -187,7 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
-    maxHeight: 250,
+    maxHeight: 275,
   },
   machineCard: {
     backgroundColor: '#f2f4f8',
@@ -222,7 +225,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#4682B4',
-    padding: 16,
+    padding: 10,
     borderRadius: 12,
     marginVertical: 6,
     elevation: 2,
@@ -235,12 +238,11 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     textAlign: 'center',
-    marginBottom: 20,
     color: '#007AFF',
     fontSize: 16,
   },
   logoutText: {
-    color: 'red',
+    color: 'rgb(135, 13, 13)',
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',

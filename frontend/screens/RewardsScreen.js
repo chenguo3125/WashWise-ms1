@@ -62,7 +62,7 @@ export default function RewardsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f2f4f8' },
-  content: { padding: 20 },
+  content: { padding: 25 },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
