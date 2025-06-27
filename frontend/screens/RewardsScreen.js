@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { getAuth } from 'firebase/auth';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../config/firebaseConfig';
 
 const rewardItems = [
   { id: '1', name: 'Free Wash Token', cost: 100 },
@@ -21,21 +24,39 @@ export default function RewardsScreen() {
   const router = useRouter();
   const [points, setPoints] = useState(200);
 
-  const handleRedeem = (item) => {
+  const handleRedeem = async (item) => {
     if (points < item.cost) {
       Alert.alert('Not enough points', `You need ${item.cost - points} more points.`);
       return;
     }
 
-    setPoints(points - item.cost);
-    Alert.alert('Redeemed', `You've redeemed: ${item.name}`);
+    const user = getAuth().currentUser;
+    if (!user) {
+      Alert.alert('Not logged in');
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'users', user.uid, 'rewards'), {
+        name: item.name,
+        cost: item.cost,
+        used: false,
+        redeemedAt: serverTimestamp(),
+      });
+
+      setPoints(points - item.cost);
+      Alert.alert('Redeemed', `You've redeemed: ${item.name}`);
+    } catch (error) {
+      console.error('Redeem error:', error);
+      Alert.alert('Error', 'Failed to redeem reward.');
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.heading}>Rewards Center</Text>
-        <Text style={styles.points}>Your Points: {points}</Text>
+        <Text style={styles.points}>My Points: {points}</Text>
 
         {rewardItems.map((item) => (
           <View key={item.id} style={styles.rewardCard}>
@@ -52,6 +73,10 @@ export default function RewardsScreen() {
           </View>
         ))}
 
+        <TouchableOpacity onPress={() => router.push('/myrewards')} style={styles.button}>
+          <Text style={styles.buttonText}>My Rewards</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Text style={styles.backText}>← Back to Home</Text>
         </TouchableOpacity>
@@ -62,7 +87,7 @@ export default function RewardsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f2f4f8' },
-  content: { padding: 20 },
+  content: { padding: 25 },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -92,33 +117,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rewardName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
   },
   rewardCost: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
     marginTop: 4,
   },
   redeemButton: {
     backgroundColor: '#28a745',
     paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 8,
+    paddingHorizontal: 8,
+    borderRadius: 20,
   },
   redeemText: {
     color: '#fff',
     fontWeight: '600',
+    fontSize: 10,
+  },
+  button: {
+    backgroundColor: '#4682B4',
+    padding: 10,
+    borderRadius: 12,
+    marginVertical: 6,
+    elevation: 2,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   backButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 10,
-    paddingVertical: 10,
+    justifyContent: 'center',
+    marginTop: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    elevation: 2,
   },
   backText: {
-    textAlign: 'center',
+    color: '#fff',
     fontSize: 16,
-    color: '#007AFF',
+    fontWeight: '600',
   },
 });
