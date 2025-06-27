@@ -7,7 +7,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
 } from 'react-native';
 
 export default function DepositScreen() {
@@ -114,11 +113,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   backButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 16,
+    justifyContent: 'center',
+    marginTop: 0,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    elevation: 2,
   },
   backText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#007AFF',
+    fontWeight: '600',
   },
 });

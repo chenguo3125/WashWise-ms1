@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, doc, getDocs, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, onSnapshot, query, updateDoc, where, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -39,7 +39,7 @@ export default function HomeScreen() {
       else router.replace('/login');
     });
     return unsubscribe;
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const unsubscribeMachines = onSnapshot(collection(db, 'machines'), (snapshot) => {
@@ -112,14 +112,14 @@ export default function HomeScreen() {
             <ScrollView contentContainerStyle={styles.listContainer}>
               {machines.slice(0, 3).map((machine) => (
                 <View key={machine.id} style={styles.machineCard}>
-                  <Text style={styles.machineType}>{machine.type}{machine.index}</Text>
+                  <Text style={styles.machineType}>{machine.type} No.{machine.index}</Text>
                   <Text style={[styles.machineStatus, { color: machine.availability ? 'green' : 'red' }]}>Status: {machine.availability ? 'Available' : 'In Use'}</Text>
                   <Text style={styles.machineLocation}>📍 {machine.location}</Text>
                 </View>
               ))}
             </ScrollView>
-            <TouchableOpacity onPress={() => router.push('/machinesFullList')}>
-              <Text style={styles.tapHint}>View All →</Text>
+            <TouchableOpacity onPress={() => router.push('/machinesFullList')} style={styles.viewButton}>
+              <Text style={styles.viewText}>View All →</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -217,12 +217,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#555',
   },
-  tapHint: {
-    textAlign: 'center',
-    marginTop: 10,
-    color: '#007AFF',
-    fontSize: 16,
-  },
   button: {
     backgroundColor: '#4682B4',
     padding: 10,
@@ -237,12 +231,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   logoutButton: {
+    backgroundColor: 'rgb(201, 47, 47)',
+    padding: 2,
+    marginHorizontal: 90,
+    borderRadius: 20,
     textAlign: 'center',
-    color: '#007AFF',
     fontSize: 16,
   },
   logoutText: {
-    color: 'rgb(135, 13, 13)',
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  viewButton: {
+    marginTop: 8,
+    backgroundColor: 'rgb(127, 116, 180)',
+    padding: 2,
+    marginHorizontal: 90,
+    borderRadius: 20,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  viewText: {
+    color: 'white',
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',

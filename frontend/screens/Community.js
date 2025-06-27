@@ -99,12 +99,19 @@ const styles = StyleSheet.create({
     color: '#444',
   },
   backButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 12,
+    justifyContent: 'center',
+    marginTop: 0,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    elevation: 2,
   },
   backText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#007AFF',
+    fontWeight: '600',
   },
   button: {
     marginTop: 25,

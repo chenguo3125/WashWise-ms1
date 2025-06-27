@@ -5,9 +5,8 @@ import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } f
 import styles from '../components/commonStyles';
 import { auth } from '../config/firebaseConfig';
 
-const router = useRouter();
-
 export default function LoginScreen() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -53,7 +52,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={styles.linkText}>Don't have an account? Register</Text>
+        <Text style={styles.linkText}>Don&#39;t have an account? Register</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

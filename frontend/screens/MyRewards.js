@@ -25,7 +25,7 @@ export default function MyRewards() {
   const user = getAuth().currentUser;
   const router = useRouter();
 
-  const fetchRewards = async () => {
+  const fetchRewards = React.useCallback(async () => {
     if (!user) return;
 
     const rewardsRef = collection(db, 'users', user.uid, 'rewards');
@@ -36,7 +36,7 @@ export default function MyRewards() {
       ...doc.data(),
     }));
     setRewards(data);
-  };
+  }, [user]);
 
   const markAsUsed = async (rewardId) => {
     const ref = doc(db, 'users', user.uid, 'rewards', rewardId);
@@ -47,7 +47,7 @@ export default function MyRewards() {
 
   useEffect(() => {
     fetchRewards();
-  }, []);
+  }, [fetchRewards]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
   },
   rewardCard: {
     backgroundColor: '#fff',
+    marginHorizontal: 8,
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
