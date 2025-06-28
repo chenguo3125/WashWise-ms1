@@ -1,5 +1,7 @@
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { getAuth } from 'firebase/auth';
+import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -9,8 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { getAuth } from 'firebase/auth';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 
 const rewardItems = [
@@ -22,7 +22,24 @@ const rewardItems = [
 
 export default function RewardsScreen() {
   const router = useRouter();
-  const [points, setPoints] = useState(200);
+  const [points, setPoints] = useState(null);
+
+
+  useEffect(() => {
+    const fetchPoints = async () => {
+      const user = getAuth().currentUser;
+      if (!user) return;
+
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+
+      if (snap.exists()) {
+        setPoints(snap.data().points || 0);
+      }
+    };
+
+    fetchPoints();
+  }, []);
 
   const handleRedeem = async (item) => {
     if (points < item.cost) {
@@ -44,6 +61,9 @@ export default function RewardsScreen() {
         redeemedAt: serverTimestamp(),
       });
 
+      await updateDoc(doc(db, 'users', user.uid), {
+        points: points - item.cost,
+      });
       setPoints(points - item.cost);
       Alert.alert('Redeemed', `You've redeemed: ${item.name}`);
     } catch (error) {
