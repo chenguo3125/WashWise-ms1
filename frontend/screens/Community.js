@@ -1,22 +1,25 @@
 import MasonryList from '@react-native-seoul/masonry-list';
 import { useRouter } from 'expo-router';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
+import { db } from '../config/firebaseConfig';
 
-const mockPosts = [
+/*const mockPosts = [
   { id: '1', title: 'Laundry Tips', image: '' },
   { id: '2', title: 'Best Detergents', image: '' },
   { id: '3', title: 'Campus Hacks', image: '' },
   { id: '4', title: 'Fold Like a Pro', image: '' },
   { id: '5', title: 'Eco-friendly Tips', image: '' },
-];
+];*/
 
 export default function Community() {
   const [posts, setPosts] = useState([]);
@@ -24,17 +27,31 @@ export default function Community() {
   const router = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
-      setPosts(mockPosts);
+    const fetchPosts = async () => {
+      const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      const list = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPosts(list);
       setLoading(false);
-    }, 500);
+    };
+
+    fetchPosts();
   }, []);
+
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <View style={[styles.image, { backgroundColor: '#d0d0d0' }]}>
-        <Text style={styles.imagePlaceholder}>🖼</Text>
-      </View>
+      {item.image ? (
+        <Image source={{ uri: item.image }} style={styles.image} />
+      ) : (
+        <View style={[styles.image, { backgroundColor: '#d0d0d0' }]}>
+          <Text style={styles.imagePlaceholder}>🖼</Text>
+        </View>
+      )}
+
       <Text style={styles.title}>{item.title}</Text>
     </View>
   );
@@ -55,6 +72,10 @@ export default function Community() {
         />
       )}
 
+      <TouchableOpacity onPress={() => router.push('/newpost')} style={styles.button}>
+        <Text style={styles.buttonText}>+ New Post</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => router.push('/chat')} style={styles.button}>
         <Text style={styles.buttonText}>Chat</Text>
       </TouchableOpacity>
@@ -67,7 +88,7 @@ export default function Community() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20},
+  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -114,7 +135,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   button: {
-    marginTop: 25,
+    marginTop: 2,
     backgroundColor: '#4682B4',
     padding: 10,
     borderRadius: 12,

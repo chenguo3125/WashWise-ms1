@@ -1,9 +1,11 @@
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from '../components/commonStyles';
-import { auth } from '../config/firebaseConfig';
+import { auth, db } from '../config/firebaseConfig';
+
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -14,7 +16,17 @@ export default function LoginScreen() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log('Login successful:', user.email);
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        // Create new user document with 0 points
+        await setDoc(userRef, {
+          email: user.email,
+          points: 0,
+        });
+        console.log('New user document created');
+      }
+
       Alert.alert('Welcome!', `Logged in as ${user.email}`);
       router.replace('/home');
     } catch (error) {

@@ -126,11 +126,40 @@ export default function MyLaundry() {
   };
 
   const stopMachine = async (machineId) => {
-    await updateDoc(doc(db, 'machines', machineId), {
+    const machineRef = doc(db, 'machines', machineId);
+    const machineSnap = await getDoc(machineRef);
+    const machineData = machineSnap.data();
+
+    const now = Date.now();
+    const endTime = machineData.endTime;
+    const timeDiff = now - endTime; // milliseconds
+    const minutesLate = timeDiff / 60000;
+
+    let pointsToAward = 0;
+    if (minutesLate >= 0 && minutesLate <= 15) {
+      pointsToAward = Math.round(50 * (1 - minutesLate / 15));
+    }
+
+    if (pointsToAward > 0 && user?.uid) {
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+      const currentPoints = userSnap.exists() ? userSnap.data().points || 0 : 0;
+
+      await updateDoc(userRef, {
+        points: currentPoints + pointsToAward
+      });
+
+      Alert.alert('Good Job!', `You earned ${pointsToAward} points for timely collection.`);
+    } else if (minutesLate > 15) {
+      Alert.alert('Too Late', `You missed the 15-minute window. No points awarded.`);
+    }
+
+    await updateDoc(machineRef, {
       availability: true,
       endTime: null,
       userId: null,
     });
+
     fetchMachines();
   };
 

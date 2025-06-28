@@ -1,23 +1,23 @@
 import * as ImagePicker from 'expo-image-picker';
 import { getAuth } from 'firebase/auth';
 import {
-    addDoc,
-    collection,
-    onSnapshot,
-    orderBy,
-    query,
-    serverTimestamp,
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
-    FlatList,
-    Image,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { db } from '../config/firebaseConfig';
 
@@ -45,15 +45,57 @@ export default function ChatScreen() {
   };
 
   const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Please allow access to your photo library.');
+      return;
+    }
+
+    console.log('Requesting picker...');
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
       quality: 0.7,
     });
 
-    if (!result.cancelled) {
-      setImage(result.assets[0].uri);
+    console.log('Picker result:', result);
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      try {
+        const uploadedUrl = await uploadToCloudinary(result.assets[0].uri);
+        setImage(uploadedUrl); // ✅ Now stores a sharable Cloudinary URL
+      } catch (error) {
+        console.error('Cloudinary upload failed:', error);
+        Alert.alert('Image upload failed');
+      }
     }
   };
+
+  const uploadToCloudinary = async (localUri) => {
+    const cloudName = 'dbce15oih';
+    const uploadPreset = 'post-images1';
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri: localUri,
+      type: 'image/jpeg',
+      name: 'upload.jpg',
+    });
+    formData.append('upload_preset', uploadPreset);
+
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (!data.secure_url) {
+      throw new Error('Image upload failed');
+    }
+
+    return data.secure_url;
+  };
+
 
   useEffect(() => {
     const q = query(
