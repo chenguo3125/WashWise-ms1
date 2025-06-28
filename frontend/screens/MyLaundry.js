@@ -172,6 +172,7 @@ export default function MyLaundry() {
                 onPress={() => setDuration(mins * 60)}
               >
                 <Text style={styles.optionText}>{mins} min</Text>
+                <Text style={styles.optionText}>${mins/30}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 12,
     marginHorizontal: 8,
-    width: 160,
+    width: 200,
     alignItems: 'center',
   },
   selectedCard: {
@@ -269,6 +270,7 @@ const styles = StyleSheet.create({
   optionText: {
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
   },
   startButton: {
     backgroundColor: '#28a745',
