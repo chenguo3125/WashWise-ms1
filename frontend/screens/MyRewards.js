@@ -53,34 +53,35 @@ export default function MyRewards() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.heading}>My Redeemed Rewards</Text>
-
-        {rewards.length === 0 ? (
-          <Text style={styles.emptyText}>You haven’t redeemed any rewards yet.</Text>
-        ) : (
-          rewards.map((reward) => (
-            <View key={reward.id} style={styles.rewardCard}>
-              <View>
-                <Text style={styles.rewardName}>{reward.name}</Text>
-                <Text style={styles.rewardCost}>Cost: {reward.cost} pts</Text>
-                <Text style={styles.rewardUsed}>
-                  Status: {reward.used ? '✅ Used' : '🕒 Not used'}
-                </Text>
+        <View style={styles.machineList}>
+          {rewards.length === 0 ? (
+            <Text style={styles.emptyText}>You haven’t redeemed any rewards yet.</Text>
+          ) : (
+            rewards.map((reward) => (
+              <View key={reward.id} style={styles.rewardCard}>
+                <View>
+                  <Text style={styles.rewardName}>{reward.name}</Text>
+                  <Text style={styles.rewardCost}>Cost: {reward.cost} pts</Text>
+                  <Text style={styles.rewardUsed}>
+                    Status: {reward.used ? '✅ Used' : '🕒 Not used'}
+                  </Text>
+                </View>
+                {!reward.used && (
+                  <TouchableOpacity
+                    style={styles.useButton}
+                    onPress={() => markAsUsed(reward.id)}
+                  >
+                    <Text style={styles.useText}>Mark as Used</Text>
+                  </TouchableOpacity>
+                )}
               </View>
-              {!reward.used && (
-                <TouchableOpacity
-                  style={styles.useButton}
-                  onPress={() => markAsUsed(reward.id)}
-                >
-                  <Text style={styles.useText}>Mark as Used</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ))
-        )}
+            ))
+          )}
+        </View>
 
       </ScrollView>
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Text style={styles.backText}>← Back</Text>
+        <Text style={styles.backText}>← Back to Home</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -103,10 +104,10 @@ const styles = StyleSheet.create({
   },
   rewardCard: {
     backgroundColor: '#fff',
-    marginHorizontal: 8,
+    marginHorizontal: 0,
     padding: 16,
     borderRadius: 12,
-    marginBottom: 16,
+    marginBottom: 10,
     elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.03,
@@ -115,6 +116,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  machineList: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 6,
+    borderColor: '#4682B4',
+    borderWidth: 2,
   },
   rewardName: {
     fontSize: 14,
@@ -135,6 +143,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6B6B',
     paddingVertical: 8,
     paddingHorizontal: 8,
+    marginTop: 30,
     borderRadius: 20,
   },
   useText: {
@@ -147,7 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 0,
+    marginTop: 10,
     paddingHorizontal: 24,
     paddingVertical: 12,
     elevation: 2,

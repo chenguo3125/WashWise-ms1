@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     maxHeight: 275,
+    borderColor: '#4682B4',
+    borderWidth: 2,
   },
   machineCard: {
     backgroundColor: '#f2f4f8',

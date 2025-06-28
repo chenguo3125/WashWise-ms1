@@ -72,7 +72,7 @@ export default function Community() {
         />
       )}
 
-      <TouchableOpacity onPress={() => router.push('/newpost')} style={styles.button}>
+      <TouchableOpacity onPress={() => router.push('/newpost')} style={styles.postButton}>
         <Text style={styles.buttonText}>+ New Post</Text>
       </TouchableOpacity>
 
@@ -88,7 +88,7 @@ export default function Community() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
+  container: { flex: 1, backgroundColor: '#fff', padding: 25 },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#333',
   },
-  list: { paddingHorizontal: 4, marginBottom: 20, backgroundColor: '#fff' },
+  list: { paddingHorizontal: 0, marginBottom: 20, backgroundColor: 'rgba(70, 130, 180, 0.2)', borderColor: '#4682B4', borderWidth: 2, borderRadius: 10 },
   card: {
     backgroundColor: '#f9f9f9',
     margin: 6,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 0,
+    marginTop: 2,
     paddingHorizontal: 24,
     paddingVertical: 12,
     elevation: 2,
@@ -133,6 +133,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  postButton: {
+    marginTop: 10,
+    backgroundColor: '#4682B4',
+    padding: 10,
+    borderRadius: 12,
+    marginVertical: 6,
+    elevation: 2,
   },
   button: {
     marginTop: 2,
