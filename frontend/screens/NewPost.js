@@ -3,13 +3,21 @@ import { useRouter } from 'expo-router';
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebaseConfig';
 
 export default function NewPost() {
     const [title, setTitle] = useState('');
     const router = useRouter();
     const user = getAuth().currentUser;
+    const categories = ['Laundry Tips', 'Report Issues', 'Reminders', 'Others'];
+    const categoryColors = {
+        'Laundry Tips': '#90EE90',     // light green
+        'Report Issues': '#FF6B6B',    // red
+        'Reminders': '#FFD700',        // yellow
+        'Others': '#555555',           // dark grey
+    };
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [imageUri, setImageUri] = useState(null);
 
     const pickImage = async () => {
@@ -33,7 +41,7 @@ export default function NewPost() {
             setImageUri(result.assets[0].uri);
         }
     };
-// i wanna kill myself
+    // i wanna kill myself
 
     const uploadToCloudinary = async (localUri) => {
         const cloudName = 'dbce15oih';
@@ -68,6 +76,10 @@ export default function NewPost() {
                 Alert.alert('Error', 'Please enter a title.');
                 return;
             }
+            if (!selectedCategory) {
+                Alert.alert('Please select a category before submitting.');
+                return;
+            }
 
             console.log('[handleSubmit] Starting upload');
             let imageUrl = '';
@@ -84,6 +96,7 @@ export default function NewPost() {
                 userId: user?.uid,
                 userEmail: user?.email,
                 createdAt: serverTimestamp(),
+                category: selectedCategory
             });
 
             console.log('[handleSubmit] Post added');
@@ -131,6 +144,25 @@ export default function NewPost() {
                     style={{ width: '100%', height: 200, borderRadius: 10, marginBottom: 20 }}
                 />
             )}
+
+            <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Select Category:</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20 }}>
+                {categories.map((cat) => (
+                    <TouchableOpacity
+                        key={cat}
+                        onPress={() => setSelectedCategory(cat)}
+                        style={{
+                            backgroundColor: selectedCategory === cat ? categoryColors[cat] : '#ccc',
+                            paddingHorizontal: 12,
+                            paddingVertical: 6,
+                            borderRadius: 20,
+                            margin: 4,
+                        }}
+                    >
+                        <Text style={{ color: 'white' }}>{cat}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
 
             <TouchableOpacity
                 onPress={handleSubmit}
