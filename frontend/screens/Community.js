@@ -20,10 +20,19 @@ import { db } from '../config/firebaseConfig';
   { id: '4', title: 'Fold Like a Pro', image: '' },
   { id: '5', title: 'Eco-friendly Tips', image: '' },
 ];*/
+const categories = ['Laundry Tips', 'Report Issues', 'Reminders', 'Others'];
+const categoryColors = {
+  'Laundry Tips': '#90EE90',     // light green
+  'Report Issues': '#FF6B6B',    // red
+  'Reminders': '#FFD700',        // yellow
+  'Others': '#555555',           // dark grey
+};
+
 
 export default function Community() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categoryFilter, setCategoryFilter] = useState('All');
   const router = useRouter();
 
   useEffect(() => {
@@ -52,19 +61,58 @@ export default function Community() {
         </View>
       )}
 
-      <Text style={styles.title}>{item.title}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6 }}>
+        <View style={{
+          height: 10,
+          width: 10,
+          borderRadius: 5,
+          backgroundColor: categoryColors[item.category] || '#999',
+          marginRight: 6,
+        }} />
+        <Text style={styles.title}>{item.title}</Text>
+      </View>
+
     </View>
   );
 
+  const filteredPosts =
+    categoryFilter === 'All'
+      ? posts
+      : posts.filter(post => post.category === categoryFilter);
+
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.heading}>Community</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12 }}>
+        {['All', ...categories].map((cat) => {
+          const bgColor =
+            cat === 'All'
+              ? (categoryFilter === 'All' ? '#007AFF' : '#ccc')
+              : (categoryFilter === cat ? categoryColors[cat] : '#ccc');
+
+          return (
+            <TouchableOpacity
+              key={cat}
+              onPress={() => setCategoryFilter(cat)}
+              style={{
+                backgroundColor: bgColor,
+                paddingHorizontal: 10,
+                paddingVertical: 4,
+                borderRadius: 16,
+                margin: 4,
+              }}
+            >
+              <Text style={{ color: 'white' }}>{cat}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
 
       {loading ? (
         <ActivityIndicator size="large" />
       ) : (
         <MasonryList
-          data={posts}
+          data={filteredPosts}
           keyExtractor={item => item.id}
           numColumns={2}
           renderItem={renderItem}
