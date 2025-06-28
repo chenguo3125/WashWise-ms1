@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -8,36 +8,43 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '../config/firebaseConfig';
 
 export default function DepositScreen() {
   const router = useRouter();
-  const [balance, setBalance] = useState(100);
+  const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState('');
+  const user = getAuth().currentUser;
 
-  const handleDeposit = () => {
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!user) return;
+      const userRef = doc(db, 'users', user.uid);
+      const snapshot = await getDoc(userRef);
+      const data = snapshot.exists() ? snapshot.data() : { balance: 0 };
+      setBalance(data.balance || 0);
+    };
+
+    fetchBalance();
+  }, [user]);
+
+  const handleDeposit = async () => {
     const num = parseFloat(amount);
     if (isNaN(num) || num <= 0) {
       Alert.alert('Invalid Input', 'Please enter a valid deposit amount');
       return;
     }
-    setBalance(prev => prev + num);
+
+    const userRef = doc(db, 'users', user.uid);
+    const snapshot = await getDoc(userRef);
+    const current = snapshot.data()?.balance || 0;
+
+    await updateDoc(userRef, { balance: current + num });
+    setBalance(current + num);
     setAmount('');
     Alert.alert('Top-Up Successful', `$${num} has been added to your balance`);
-  };
-
-  const handlePayment = () => {
-    const num = parseFloat(amount);
-    if (isNaN(num) || num <= 0) {
-      Alert.alert('Invalid Input', 'Please enter a valid deposit amount');
-      return;
-    }
-    if (num > balance) {
-      Alert.alert('Insufficient balance', 'Please top up first');
-      return;
-    }
-    setBalance(prev => prev - num);
-    setAmount('');
-    Alert.alert('Payment Successful', `You have paid $${num}`);
   };
 
   return (
@@ -47,7 +54,7 @@ export default function DepositScreen() {
 
       <TextInput
         style={styles.input}
-        placeholder="Enter amount to deposit/pay"
+        placeholder="Enter amount to deposit"
         keyboardType="numeric"
         value={amount}
         onChangeText={setAmount}
@@ -55,10 +62,6 @@ export default function DepositScreen() {
 
       <TouchableOpacity style={styles.button} onPress={handleDeposit}>
         <Text style={styles.buttonText}>TOP UP</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.button, styles.payButton]} onPress={handlePayment}>
-        <Text style={styles.buttonText}>PAY</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -103,9 +106,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 12,
   },
-  payButton: {
-    backgroundColor: '#FF6B6B',
-  },
   buttonText: {
     color: '#fff',
     fontWeight: '600',
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 0,
+    marginTop: 12,
     paddingHorizontal: 24,
     paddingVertical: 12,
     elevation: 2,
