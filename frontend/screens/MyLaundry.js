@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
-import { getAuth } from 'firebase/auth';
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -19,21 +19,36 @@ export default function MyLaundry() {
   const [machines, setMachines] = useState([]);
   const [selectedMachine, setSelectedMachine] = useState(null);
   const [duration, setDuration] = useState(0);
+  const [balance, setBalance] = useState(0);
+  const [user, setUser] = useState(null);
   const router = useRouter();
   const timerRef = useRef(null);
   const presetTimes = [30, 45, 60];
-  const user = getAuth().currentUser;
+
   const scheduleLaundryReminder = async (machineName, duration) => {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Laundry Reminder',
-      body: `Your laundry on ${machineName} is done! Please collect it.`,
-    },
-    trigger: {
-      seconds: duration, 
-    },
-  });
-};
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Laundry Reminder',
+        body: `Your laundry on ${machineName} is done! Please collect it.`,
+      },
+      trigger: {
+        seconds: duration,
+      },
+    });
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(getAuth(), async (user) => {
+      if (user) {
+        setUser(user);
+        const userRef = doc(db, 'users', user.uid);
+        const snapshot = await getDoc(userRef);
+        const data = snapshot.exists() ? snapshot.data() : { balance: 0 };
+        setBalance(data.balance || 0);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
@@ -72,17 +87,39 @@ export default function MyLaundry() {
 
   const startLaundry = async () => {
     if (!selectedMachine || duration === 0) {
-      Alert.alert('Error', 'Please select a machine and duration.');
+      Alert.alert('Error', 'Please select both the machine and duration.');
       return;
     }
+
+    const price = duration / 30 / 60;
+    const userRef = doc(db, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+    const currentBalance = userSnap.data()?.balance || 0;
+
+    if (currentBalance < price) {
+      Alert.alert(
+        `Insufficient balance: Need $${(price - currentBalance).toFixed(2)} more. `,
+        'Please top up first.'
+      );
+
+      return;
+    }
+
     const endTime = Date.now() + duration * 1000;
+
+    await updateDoc(userRef, {
+      balance: currentBalance - price,
+    });
+    setBalance(currentBalance - price);
+
     await updateDoc(doc(db, 'machines', selectedMachine.id), {
       availability: false,
       endTime,
       userId: user.uid,
     });
+
     await scheduleLaundryReminder(`${selectedMachine.type} ${selectedMachine.index}`, duration);
-    
+
     setSelectedMachine(null);
     setDuration(0);
     fetchMachines();
@@ -108,6 +145,7 @@ export default function MyLaundry() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View>
           <Text style={styles.heading}>My Laundry</Text>
+          <Text style={styles.balance}>Balance: ${balance.toFixed(2)}</Text>
 
           <Text style={styles.subheading}>Machines:</Text>
           <FlatList
@@ -129,7 +167,7 @@ export default function MyLaundry() {
                   ]}
                 >
                   <Text style={[styles.machineText, inUse && styles.strikethrough]}>
-                    {item.type}{item.index}
+                    {item.type} <Text style={{ fontStyle: 'italic' }}>No.{item.index}</Text>
                   </Text>
                   <Text style={[styles.machineLocation, inUse && styles.strikethrough]}>
                     📍 {item.location}
@@ -150,7 +188,7 @@ export default function MyLaundry() {
                           style={styles.stopButton}
                           onPress={() => stopMachine(item.id)}
                         >
-                          <Text style={styles.buttonText}>{item.remaining === 0? 'Collect' : 'Cancel'}</Text>
+                          <Text style={styles.buttonText}>{item.remaining === 0 ? 'Collect' : 'Cancel'}</Text>
                         </TouchableOpacity>
                       )}
                     </>
@@ -172,7 +210,7 @@ export default function MyLaundry() {
                 onPress={() => setDuration(mins * 60)}
               >
                 <Text style={styles.optionText}>{mins} min</Text>
-                <Text style={styles.optionText}>${mins/30}</Text>
+                <Text style={styles.optionText}>${mins / 30}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -184,9 +222,7 @@ export default function MyLaundry() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Text style={styles.backText}>← Back to Home</Text>
           </TouchableOpacity>
-
         </View>
-        
       </ScrollView>
     </SafeAreaView>
   );
@@ -203,8 +239,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
     color: '#333',
+  },
+  balance: {
+    fontSize: 18,
+    color: '#007AFF',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   subheading: {
     fontSize: 18,
@@ -214,14 +256,15 @@ const styles = StyleSheet.create({
   },
   machineCard: {
     backgroundColor: '#e6e6e6',
-    padding: 14,
+    padding: 16,
     borderRadius: 12,
     marginHorizontal: 8,
     width: 200,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   selectedCard: {
-    backgroundColor: '#6495ED',
+    backgroundColor: 'rgba(70, 130, 180, 0.2)',
   },
   disabledCard: {
     backgroundColor: '#ccc',
@@ -258,17 +301,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   optionButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#e6e6e6',
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 10,
     marginHorizontal: 6,
   },
   optionSelected: {
-    backgroundColor: '#4682B4',
+    backgroundColor: 'rgba(70, 130, 180, 0.2)',
   },
   optionText: {
-    color: '#fff',
+    color: 'rgba(55, 45, 45, 0.8)',
     fontWeight: '600',
     textAlign: 'center',
   },

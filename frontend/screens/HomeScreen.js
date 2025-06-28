@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, doc, getDocs, onSnapshot, query, updateDoc, where, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, onSnapshot, query, updateDoc, where, setDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -18,6 +18,24 @@ export default function HomeScreen() {
   const [machines, setMachines] = useState([]);
   const [timers, setTimers] = useState([]);
   const router = useRouter();
+
+  useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          email: user.email,
+          balance: 0,
+          createdAt: new Date(),
+        });
+      }
+    }
+  });
+  return unsubscribe;
+}, []);
 
   useEffect(() => {
   const saveTokenToFirestore = async () => {
