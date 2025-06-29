@@ -26,6 +26,16 @@ export default function MyLaundry() {
   const presetTimes = [30, 45, 60];
 
   const scheduleLaundryReminder = async (machineName, duration) => {
+    if (duration > 5 * 60) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: '⏳ 5 minutes left!',
+          body: `Get ready to collect your laundry on ${machineName}.`,
+        },
+        trigger: { seconds: duration - 5 * 60 },
+      });
+    }
+
     await Notifications.scheduleNotificationAsync({
       content: {
         title: 'Laundry Reminder',
@@ -35,7 +45,17 @@ export default function MyLaundry() {
         seconds: duration,
       },
     });
+
+    const reminderId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '⚠️ Collection Reminder',
+        body: `Your laundry on ${machineName} has been sitting for 10 minutes.`,
+      },
+      trigger: { seconds: duration + 10 * 60 },
+    });
   };
+
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), async (user) => {
@@ -116,9 +136,10 @@ export default function MyLaundry() {
       availability: false,
       endTime,
       userId: user.uid,
+      reminderId,
     });
 
-    await scheduleLaundryReminder(`${selectedMachine.type} ${selectedMachine.index}`, duration);
+    await scheduleLaundryReminders(`${selectedMachine.type} ${selectedMachine.index}`, duration, selectedMachine.id);
 
     setSelectedMachine(null);
     setDuration(0);
@@ -134,6 +155,11 @@ export default function MyLaundry() {
     const endTime = machineData.endTime;
     const timeDiff = now - endTime; // milliseconds
     const minutesLate = timeDiff / 60000;
+    const reminderId = machineSnap.data().reminderId;
+
+    if (reminderId) {
+      await Notifications.cancelScheduledNotificationAsync(reminderId);
+    }
 
     let pointsToAward = 0;
     if (minutesLate >= 0 && minutesLate <= 15) {
@@ -158,6 +184,7 @@ export default function MyLaundry() {
       availability: true,
       endTime: null,
       userId: null,
+      reminderId: null,
     });
 
     fetchMachines();
