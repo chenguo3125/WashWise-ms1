@@ -81,12 +81,13 @@ You can begin development and testing by editing files inside the `frontend/scre
 
 You can now test these key user flows:
 
-1. **Register** a new user
-2. **Log in** using the same credentials
-3. **Try**:
-   - Viewing laundry status
-   - Select and start a laundry session
-   - Redeeming prizes and losing reward points
+1. **Login/Register**: Firebase email/password authentication
+2. **Start Session**: Pick a machine + time, auto-deduct credit, timer starts
+3. **Collect Laundry**: Press "Collect" → receive 0–50 pts depending on punctuality
+4. **Check Rewards**: View or redeem items, see points deducted
+5. **Post to Community**: Select category, attach image, submit → auto-tag and color-coded
+6. **Chat on Posts**: Real-time replies with optional image attachments
+7. **Deposit Funds**: Top up balance to enable session starts
 
 ---
 
