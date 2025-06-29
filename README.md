@@ -6,6 +6,18 @@ The project is developed by **Guo Chen** and **Ziyi Xie**, aiming to improve the
 
 ---
 
+## 🚀 Features
+
+- 🔄 **Real-time Machine Status** – View up-to-date availability of washing and drying machines
+- ⏰ **Machine-based Timers** – Start sessions with automatic countdown using `endTime` logic
+- 🔔 **Push Notifications** – Get reminders *before*, *on*, and *after* laundry cycle completion
+- 🎯 **Points & Rewards System** – Earn points for punctual collection; redeem for prizes
+- 💬 **Community & Chat** – Post, comment, and attach photos to communicate with dorm mates
+- 📸 **Cloud-based Image Hosting** – All post images are uploaded and managed via Cloudinary
+- 📱 **Responsive UI** – Intuitive design with bold contrast, action-driven buttons, and logical page grouping
+
+---
+
 ## Get Started
 
 To deploy and test the WashWise app locally, follow these steps:
@@ -81,18 +93,19 @@ You can now test these key user flows:
 ## Project Structure
 
 ```
-washwise-test2/
-├── app/                    # (Optional, unused if not using expo-router)
+washwise-ms1/
 ├── frontend/
-│   ├── assets/             # Images and fonts
-│   ├── components/         # Reusable components
-│   ├── config/             # Firebase configuration
-│   └── screens/            # Main screens (Login, Register, etc.)
-├── scripts/                # Dev scripts
-├── node_modules/           # Installed dependencies
-├── README.md               # This file
+│   ├── assets/         # Images and fonts
+│   ├── components/     # Reusable UI elements
+│   ├── config/         # Firebase + Cloudinary config
+│   ├── screens/        # Main app pages
+│   └── utils/          # Helper functions (e.g., formatting time, validation)
+├── scripts/            # Development scripts
+├── node_modules/       # Installed packages
 ├── package.json
+├── README.md
 └── .gitignore, tsconfig.json, etc.
+
 ```
 
 ---
