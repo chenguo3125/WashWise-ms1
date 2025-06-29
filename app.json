@@ -1,14 +1,15 @@
 {
   "expo": {
-    "name": "washwise-test2",
-    "slug": "snack-933ef2dc-c35c-400e-bf35-38e519a62b9f",
+    "name": "WashWise",
+    "description": "Your Smart Laundry Buddy, Always There for You",
+    "slug": "washwise-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./frontend/assets/WashWiseLogo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./frontend/assets/WashWiseLogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./frontend/assets/WashWiseLogo.png",
         "backgroundColor": "#ffffff"
       }
     },

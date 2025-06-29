@@ -15,6 +15,7 @@ import { registerForPushNotificationsAsync } from '../utils/notificationUtils';
 
 export default function HomeScreen() {
   const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [machines, setMachines] = useState([]);
   const [timers, setTimers] = useState([]);
   const router = useRouter();
@@ -28,9 +29,15 @@ export default function HomeScreen() {
       if (!userSnap.exists()) {
         await setDoc(userRef, {
           email: user.email,
+          name: user.displayName || '',
           balance: 0,
+          points: 0,
           createdAt: new Date(),
         });
+      }else {
+        const data = userSnap.data();
+        setUserEmail(data.email);
+        setUserName(data.name || 'WashWiser');
       }
     }
   });
@@ -53,7 +60,9 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) setUserEmail(user.email);
+      if (user) {
+        setUserEmail(user.email);
+      }
       else router.replace('/login');
     });
     return unsubscribe;
@@ -122,7 +131,13 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.welcome}>Welcome to WashWise@NUS{userEmail ? `\n${userEmail}` : ''}</Text>
+        <Text style={styles.welcome}>Welcome to WashWise@NUS</Text>
+        {userName !== '' && (
+          <Text style={[styles.welcome, { fontWeight: 'bold', color: '#4682B4' }]}>
+            {userName}
+          </Text>
+        )}
+
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Machine Availability</Text>
@@ -192,11 +207,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     fontStyle: 'italic',
-    marginBottom: 20,
+    marginBottom: 0,
     color: 'grey',
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 15,
+    marginTop: 10,
   },
   sectionTitle: {
     fontSize: 22,

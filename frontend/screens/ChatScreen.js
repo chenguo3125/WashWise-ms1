@@ -18,6 +18,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import { db } from '../config/firebaseConfig';
 
@@ -63,7 +64,7 @@ export default function ChatScreen() {
     if (!result.canceled && result.assets && result.assets.length > 0) {
       try {
         const uploadedUrl = await uploadToCloudinary(result.assets[0].uri);
-        setImage(uploadedUrl); // ✅ Now stores a sharable Cloudinary URL
+        setImage(uploadedUrl); // stores a sharable Cloudinary URL
       } catch (error) {
         console.error('Cloudinary upload failed:', error);
         Alert.alert('Image upload failed');

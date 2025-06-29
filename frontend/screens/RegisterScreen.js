@@ -3,7 +3,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from '../components/commonStyles';
-import { auth } from '../config/firebaseConfig';
+import { auth, db } from '../config/firebaseConfig';
+import { setDoc, doc } from 'firebase/firestore';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');
@@ -14,6 +15,13 @@ export default function RegisterScreen() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      await setDoc(doc(db, 'users', user.uid), {
+        name: name,
+        email: email,
+        createdAt: new Date(),
+      });
+
       console.log("User registered:", user);
       Alert.alert('Success', 'Account created successfully!');
       router.replace('/login');

@@ -182,6 +182,7 @@ export default function MyLaundry() {
             horizontal
             keyExtractor={(item) => item.id}
             showsHorizontalScrollIndicator={false}
+            style={styles.flatList}
             renderItem={({ item }) => {
               const inUse = item.availability === false;
               const isSelected = selectedMachine?.id === item.id;
@@ -283,6 +284,13 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     color: '#000',
   },
+  flatList: {
+    borderRadius: 10,
+    padding: 6,
+    borderColor: '#4682B4',
+    borderWidth: 2,
+    marginBottom: 10,
+  },
   machineCard: {
     backgroundColor: '#e6e6e6',
     padding: 16,
@@ -335,6 +343,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 10,
     marginHorizontal: 6,
+    marginBottom: 10,
   },
   optionSelected: {
     backgroundColor: 'rgba(70, 130, 180, 0.2)',
