@@ -73,7 +73,11 @@ You can begin development and testing by editing files inside the `frontend/scre
 - `MachinesFullList.js` – real-time machine status
 - `MyLaundry.js` – user's active laundry sessions
 - `RewardsScreen.js` – points & incentives
+- `MyRewards.js` – points & incentives
 - `Community.js` – feedback & nudges
+- `NewPost.js` – create new post
+- `ChatScreen.js` – live chat & discussion
+- `DepositScreen.js` – top up balance
 
 ---
 
