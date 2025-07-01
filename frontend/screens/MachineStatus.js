@@ -1,10 +1,10 @@
 import { useRouter } from 'expo-router';
 import { collection, getDocs } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebaseConfig';
 
-export default function MachinesFullList() {
+export default function MachineStatus() {
   const [machines, setMachines] = useState([]);
   const router = useRouter();
 

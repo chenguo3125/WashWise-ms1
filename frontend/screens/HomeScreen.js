@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, doc, getDocs, getDoc, onSnapshot, query, updateDoc, where, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -160,7 +160,7 @@ export default function HomeScreen() {
                 </View>
               ))}
             </ScrollView>
-            <TouchableOpacity onPress={() => router.push('/machinesFullList')} style={styles.viewButton}>
+            <TouchableOpacity onPress={() => router.push('/machineStatus')} style={styles.viewButton}>
               <Text style={styles.viewText}>View All →</Text>
             </TouchableOpacity>
           </View>
