@@ -72,6 +72,15 @@ export default function HomeScreen() {
     const unsubscribeMachines = onSnapshot(collection(db, 'machines'), (snapshot) => {
       const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       list.sort((a, b) => (b.availability === true) - (a.availability === true));
+      
+      list.sort((a, b) => {
+        if (a.availability !== b.availability) {
+          return a.availability ? -1 : 1;
+        }
+        if (a.type < b.type) return 1;
+        if (a.type > b.type) return -1;
+        return a.index - b.index;
+      });
       setMachines(list);
     });
     return unsubscribeMachines;

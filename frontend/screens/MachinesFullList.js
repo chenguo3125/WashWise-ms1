@@ -19,7 +19,14 @@ export default function MachinesFullList() {
 
         // Sort available machines first
         machineList.sort((a, b) => Number(b.availability) - Number(a.availability));
-
+        machineList.sort((a, b) => {
+          if (a.availability !== b.availability) {
+            return a.availability ? -1 : 1;
+          }
+          if (a.type < b.type) return 1;
+          if (a.type > b.type) return -1;
+          return a.index - b.index;
+        });
         setMachines(machineList);
       } catch (error) {
         console.error('Error fetching machines:', error);

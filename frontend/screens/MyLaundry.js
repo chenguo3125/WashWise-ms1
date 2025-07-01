@@ -53,9 +53,9 @@ export default function MyLaundry() {
       },
       trigger: { seconds: duration + 10 * 60 },
     });
+
+    return reminderId;
   };
-
-
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(getAuth(), async (user) => {
@@ -98,6 +98,15 @@ export default function MyLaundry() {
         remaining,
       };
     });
+
+    list.sort((a, b) => {
+      if (a.availability !== b.availability) {
+        return a.availability ? -1 : 1;
+      }
+      if (a.type < b.type) return 1;
+      if (a.type > b.type) return -1;
+      return a.index - b.index;
+    });
     setMachines(list);
   };
 
@@ -118,14 +127,17 @@ export default function MyLaundry() {
 
     if (currentBalance < price) {
       Alert.alert(
-        `Insufficient balance: Need $${(price - currentBalance).toFixed(2)} more. `,
+        `Insufficient balance: Need $${(price - currentBalance).toFixed(2)} more.`,
         'Please top up first.'
       );
-
       return;
     }
 
     const endTime = Date.now() + duration * 1000;
+    const reminderId = await scheduleLaundryReminder(
+      `${selectedMachine.type} ${selectedMachine.index}`,
+      duration
+    );
 
     await updateDoc(userRef, {
       balance: currentBalance - price,
@@ -139,11 +151,11 @@ export default function MyLaundry() {
       reminderId,
     });
 
-    await scheduleLaundryReminders(`${selectedMachine.type} ${selectedMachine.index}`, duration, selectedMachine.id);
-
     setSelectedMachine(null);
     setDuration(0);
     fetchMachines();
+
+    Alert.alert('Successfully Booked', `${selectedMachine.type} No.${selectedMachine.index} has started!`);
   };
 
   const stopMachine = async (machineId) => {
@@ -153,9 +165,9 @@ export default function MyLaundry() {
 
     const now = Date.now();
     const endTime = machineData.endTime;
-    const timeDiff = now - endTime; // milliseconds
+    const timeDiff = now - endTime;
     const minutesLate = timeDiff / 60000;
-    const reminderId = machineSnap.data().reminderId;
+    const reminderId = machineData.reminderId;
 
     if (reminderId) {
       await Notifications.cancelScheduledNotificationAsync(reminderId);
@@ -172,12 +184,14 @@ export default function MyLaundry() {
       const currentPoints = userSnap.exists() ? userSnap.data().points || 0 : 0;
 
       await updateDoc(userRef, {
-        points: currentPoints + pointsToAward
+        points: currentPoints + pointsToAward,
       });
 
       Alert.alert('Good Job!', `You earned ${pointsToAward} points for timely collection.`);
     } else if (minutesLate > 15) {
       Alert.alert('Too Late', `You missed the 15-minute window. No points awarded.`);
+    } else {
+      Alert.alert('Cancellation Successful', 'Please collect your laundry soon.');
     }
 
     await updateDoc(machineRef, {
