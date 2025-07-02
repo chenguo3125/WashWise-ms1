@@ -150,9 +150,9 @@ export default function MyLaundry() {
       machineId: selectedMachine.id,
       machineType: selectedMachine.type,
       machineIndex: selectedMachine.index,
-      startTime: Date.now(),
+      startTime: new Date(),
       endTime,
-      duration,
+      duration: duration/ 60,
       price,
       status: 'in_progress',
       pointsAwarded: 0,
@@ -214,7 +214,7 @@ export default function MyLaundry() {
     if (sessionId) {
       const sessionDoc = doc(db, 'laundry_sessions', sessionId);
       await updateDoc(sessionDoc, {
-        endTime: now,
+        endTime: new Date(),
         status: 'finished',
         pointsAwarded: pointsToAward,
       });
@@ -225,7 +225,7 @@ export default function MyLaundry() {
       endTime: null,
       userId: null,
       reminderId: null,
-      sessionId: null, // 清除
+      sessionId: null,
     });
 
     fetchMachines();
