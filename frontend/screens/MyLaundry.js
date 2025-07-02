@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, addDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -144,11 +144,27 @@ export default function MyLaundry() {
     });
     setBalance(currentBalance - price);
 
+    const sessionsRef = collection(db, 'laundry_sessions');
+    const sessionRef = await addDoc(sessionsRef, {
+      userId: user.uid,
+      machineId: selectedMachine.id,
+      machineType: selectedMachine.type,
+      machineIndex: selectedMachine.index,
+      startTime: Date.now(),
+      endTime,
+      duration,
+      price,
+      status: 'in_progress',
+      pointsAwarded: 0,
+      reminderId,
+    });
+
     await updateDoc(doc(db, 'machines', selectedMachine.id), {
       availability: false,
       endTime,
       userId: user.uid,
       reminderId,
+      sessionId: sessionRef.id,
     });
 
     setSelectedMachine(null);
@@ -194,11 +210,22 @@ export default function MyLaundry() {
       Alert.alert('Cancellation Successful', 'Please collect your laundry soon.');
     }
 
+    const sessionId = machineData.sessionId;
+    if (sessionId) {
+      const sessionDoc = doc(db, 'laundry_sessions', sessionId);
+      await updateDoc(sessionDoc, {
+        endTime: now,
+        status: 'finished',
+        pointsAwarded: pointsToAward,
+      });
+    }
+
     await updateDoc(machineRef, {
       availability: true,
       endTime: null,
       userId: null,
       reminderId: null,
+      sessionId: null, // 清除
     });
 
     fetchMachines();
