@@ -41,7 +41,7 @@ export default function MyRewards() {
   const markAsUsed = async (rewardId) => {
     const ref = doc(db, 'users', user.uid, 'rewards', rewardId);
     await updateDoc(ref, { used: true });
-    Alert.alert('Marked as used');
+    Alert.alert('Marked as used', 'Have a nice day! 😊');
     fetchRewards();
   };
 
