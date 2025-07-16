@@ -99,13 +99,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   backButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#7f8c8d',
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 0,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    marginTop: 16,
+    padding: 15,
+    // paddingHorizontal: 24,
+    // paddingVertical: 12,
     elevation: 2,
   },
   backText: {

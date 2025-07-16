@@ -434,13 +434,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   backButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#7f8c8d',
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 16,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    padding: 15,
+    // paddingHorizontal: 24,
+    // paddingVertical: 12,
     elevation: 2,
   },
   backText: {

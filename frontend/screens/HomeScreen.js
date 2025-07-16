@@ -192,6 +192,9 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => router.push('/deposit')} style={styles.button}>
             <Text style={styles.buttonText}>Deposit</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/report')} style={styles.button}>
+            <Text style={styles.buttonText}>Report</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
@@ -264,9 +267,9 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#4682B4',
-    padding: 10,
+    padding: 6,
     borderRadius: 12,
-    marginVertical: 6,
+    marginVertical: 5,
     elevation: 2,
   },
   buttonText: {

@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { getAuth } from 'firebase/auth';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { Alert, Image, SafeAreaView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { db } from '../config/firebaseConfig';
 
 export default function NewPost() {
@@ -175,6 +175,30 @@ export default function NewPost() {
             >
                 <Text style={{ color: '#fff', fontWeight: 'bold' }}>Submit</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                <Text style={styles.backText}>← Back to Home</Text>
+            </TouchableOpacity>
+
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+  backButton: {
+    backgroundColor: '#7f8c8d',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    padding: 15,
+    // paddingHorizontal: 24,
+    // paddingVertical: 12,
+    elevation: 2,
+  },
+  backText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
