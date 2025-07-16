@@ -133,7 +133,7 @@ export default function ChatScreen() {
 
       <View style={styles.inputContainer}>
         <TouchableOpacity onPress={pickImage} style={styles.attachButton}>
-          <Text style={styles.attachText}>📎</Text>
+          <Image source={require('../assets/pic.png')} style={styles.iconimg} />
         </TouchableOpacity>
         <TextInput
           placeholder="Type a message..."
@@ -172,6 +172,13 @@ const styles = StyleSheet.create({
     width: 200,
     height: 150,
     borderRadius: 8,
+  },
+  iconimg: {
+    width: 44,
+    height: 33,
+    borderRadius: 3,
+    // justifyContent: 'center',
+    // paddingVertical: 8,
   },
   inputContainer: {
     flexDirection: 'row',
