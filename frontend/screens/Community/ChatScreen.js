@@ -20,7 +20,7 @@ import {
   View,
   Alert,
 } from 'react-native';
-import { db } from '../config/firebaseConfig';
+import { db } from '../../config/firebaseConfig';
 
 export default function ChatScreen() {
   const [message, setMessage] = useState('');
@@ -133,7 +133,7 @@ export default function ChatScreen() {
 
       <View style={styles.inputContainer}>
         <TouchableOpacity onPress={pickImage} style={styles.attachButton}>
-          <Image source={require('../assets/pic.png')} style={styles.iconimg} />
+          <Image source={require('../../assets/pic.png')} style={styles.iconimg} />
         </TouchableOpacity>
         <TextInput
           placeholder="Type a message..."

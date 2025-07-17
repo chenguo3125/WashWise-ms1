@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { auth, db } from '../config/firebaseConfig';
-import { registerForPushNotificationsAsync } from '../utils/notificationUtils';
+import { auth, db } from '../../config/firebaseConfig';
+import { registerForPushNotificationsAsync } from '../../utils/notificationUtils';
 
 export default function HomeScreen() {
   const [userEmail, setUserEmail] = useState('');

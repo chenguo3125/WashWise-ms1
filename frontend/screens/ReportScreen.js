@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import {
   Alert,

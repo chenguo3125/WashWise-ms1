@@ -1,2 +1,2 @@
-import RegisterScreen from '../frontend/screens/RegisterScreen';
+import RegisterScreen from '../frontend/screens/Authen/RegisterScreen';
 export default RegisterScreen;

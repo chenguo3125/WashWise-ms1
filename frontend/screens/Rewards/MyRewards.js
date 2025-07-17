@@ -18,7 +18,7 @@ import {
   orderBy,
 } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
-import { db } from '../config/firebaseConfig';
+import { db } from '../../config/firebaseConfig';
 
 export default function MyRewards() {
   const [rewards, setRewards] = useState([]);
