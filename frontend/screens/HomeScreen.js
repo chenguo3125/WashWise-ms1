@@ -2,10 +2,10 @@ import { useRouter } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { styles } from './HomeScreen.styles';
 import {
   Alert,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -184,7 +184,7 @@ export default function HomeScreen() {
             <Text style={styles.buttonText}>My Laundry</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/rewards')} style={styles.button}>
-            <Text style={styles.buttonText}>Points & Rewards</Text>
+            <Text style={styles.buttonText}>Rewards</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/community')} style={styles.button}>
             <Text style={styles.buttonText}>Community</Text>
@@ -203,125 +203,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f2f4f8',
-    padding: 25,
-    justifyContent: 'space-between',
-  },
-  content: {
-    flex: 1,
-  },
-  welcome: {
-    fontSize: 18,
-    fontWeight: '500',
-    textAlign: 'center',
-    fontStyle: 'italic',
-    marginBottom: 0,
-    color: 'grey',
-  },
-  section: {
-    marginBottom: 15,
-    marginTop: 10,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  machineList: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 10,
-    maxHeight: 275,
-    borderColor: '#4682B4',
-    borderWidth: 2,
-  },
-  machineCard: {
-    backgroundColor: '#f2f4f8',
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  machineType: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  machineStatus: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  machineLocation: {
-    fontSize: 13,
-    color: '#555',
-  },
-  button: {
-    backgroundColor: '#4682B4',
-    padding: 6,
-    borderRadius: 12,
-    marginVertical: 5,
-    elevation: 2,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  logoutButton: {
-    backgroundColor: 'rgb(201, 47, 47)',
-    padding: 2,
-    marginHorizontal: 90,
-    borderRadius: 20,
-    textAlign: 'center',
-    fontSize: 16,
-  },
-  logoutText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  viewButton: {
-    marginTop: 8,
-    backgroundColor: 'rgb(127, 116, 180)',
-    padding: 2,
-    marginHorizontal: 90,
-    borderRadius: 20,
-    textAlign: 'center',
-    fontSize: 16,
-  },
-  viewText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  timerScrollContainer: {
-    paddingVertical: 10,
-    marginBottom: 10,
-  },
-  timerCard: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 10,
-    minWidth: 160,
-    elevation: 2,
-  },
-  timerText: {
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-});
