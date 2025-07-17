@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { db } from '../config/firebaseConfig';
+import { db } from '../../config/firebaseConfig';
 
 /*const mockPosts = [
   { id: '1', title: 'Laundry Tips', image: '' },

@@ -1,4 +1,4 @@
-import LoginScreen from '../frontend/screens/LoginScreen';
+import LoginScreen from '../frontend/screens/Authen/LoginScreen';
 export default LoginScreen;
 
 

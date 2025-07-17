@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { db } from '../config/firebaseConfig';
+import { db } from '../../config/firebaseConfig';
 
 const rewardItems = [
   { id: '1', name: 'Free Wash Token', cost: 100 },

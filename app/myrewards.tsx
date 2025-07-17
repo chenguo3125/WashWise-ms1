@@ -1,2 +1,2 @@
-import MyRewards from '../frontend/screens/MyRewards';
+import MyRewards from '../frontend/screens/Rewards/MyRewards';
 export default MyRewards;
