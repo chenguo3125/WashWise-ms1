@@ -159,9 +159,10 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#4682B4',
-    padding: 10,
+    padding: 15,
     borderRadius: 12,
     marginVertical: 0,
+    marginTop: 10,
     elevation: 2,
   },
   buttonText: {

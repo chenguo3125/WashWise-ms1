@@ -102,9 +102,9 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#28a745',
-    padding: 14,
+    padding: 15,
     borderRadius: 10,
-    marginBottom: 12,
+    marginBottom: 0,
   },
   buttonText: {
     color: '#fff',
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 10,
     padding: 15,
     // paddingHorizontal: 24,
     // paddingVertical: 12,

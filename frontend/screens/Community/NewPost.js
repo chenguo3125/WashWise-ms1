@@ -168,8 +168,8 @@ export default function NewPost() {
                 onPress={handleSubmit}
                 style={{
                     backgroundColor: '#007AFF',
-                    padding: 12,
-                    borderRadius: 8,
+                    padding: 15,
+                    borderRadius: 12,
                     alignItems: 'center',
                 }}
             >
