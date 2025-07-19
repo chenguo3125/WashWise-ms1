@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
   },
   startButton: {
     backgroundColor: '#28a745',
-    paddingVertical: 14,
+    paddingVertical: 15,
     borderRadius: 10,
     marginBottom: 0,
   },

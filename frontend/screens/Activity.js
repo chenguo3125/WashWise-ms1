@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../config/firebaseConfig';
 import { PieChart } from 'react-native-chart-kit';
+import { router } from 'expo-router';
 
 export default function LaundryAnalytics() {
   const [laundryData, setLaundryData] = useState([]);
@@ -147,11 +148,31 @@ export default function LaundryAnalytics() {
       ) : (
         <Text style={styles.noDataText}>No laundry data available</Text>
       )}
+
+      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <Text style={styles.backText}>← Back to Home</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  backButton: {
+    backgroundColor: '#7f8c8d',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 0,
+    padding: 15,
+    // paddingHorizontal: 24,
+    // paddingVertical: 12,
+    elevation: 2,
+  },
+  backText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   container: {
     flex: 1,
     padding: 25,
