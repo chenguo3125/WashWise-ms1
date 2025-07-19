@@ -195,6 +195,9 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => router.push('/report')} style={styles.button}>
             <Text style={styles.buttonText}>Report</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/activity')} style={styles.button}>
+            <Text style={styles.buttonText}>Activity</Text>
+          </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
