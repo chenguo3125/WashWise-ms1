@@ -303,16 +303,16 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     infoCard: {
-        backgroundColor: '#e8f5e9',
+        backgroundColor: 'rgba(70, 130, 180, 0.2)',
         padding: 14,
         borderRadius: 16,
         borderLeftWidth: 4,
-        borderLeftColor: '#4caf50',
+        borderLeftColor: '#4682B4',
     },
     infoTitle: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#2e7d32',
+        color: '#4682B4',
         marginBottom: 10,
     },
     infoItem: {
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#4caf50',
+        backgroundColor: '#4682B4',
         marginTop: 8,
         marginRight: 12,
     },

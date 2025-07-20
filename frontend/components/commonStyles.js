@@ -32,7 +32,7 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#2563eb',
+    backgroundColor: '#4682B4',
     paddingVertical: 14,
     borderRadius: 12,
     marginBottom: 16,
@@ -45,7 +45,7 @@ export default StyleSheet.create({
   },
   linkText: {
     textAlign: 'center',
-    color: '#2563eb',
+    color: '#7f8c8d',
     fontSize: 14,
   },
 });
