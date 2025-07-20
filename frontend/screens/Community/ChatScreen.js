@@ -174,21 +174,22 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   iconimg: {
-    width: 44,
+    width: 33,
     height: 33,
-    borderRadius: 3,
+    // borderRadius: 3,
     // justifyContent: 'center',
     // paddingVertical: 8,
+    tintColor: '#4682B4'
   },
   inputContainer: {
     flexDirection: 'row',
     padding: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#eee',
     alignItems: 'center',
   },
   input: {
     flex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: 'white',
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -201,10 +202,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
   sendButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#4682B4',
     borderRadius: 20,
     paddingVertical: 8,
     paddingHorizontal: 14,
+    marginLeft: 7,
+    justifyContent: 'center',
   },
   sendText: {
     color: '#fff',

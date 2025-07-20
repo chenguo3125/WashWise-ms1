@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#007AFF',
+    color: '#4682B4',
   },
   rewardCard: {
     backgroundColor: '#fff',

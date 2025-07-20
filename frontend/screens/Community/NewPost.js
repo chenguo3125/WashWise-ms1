@@ -111,16 +111,16 @@ export default function NewPost() {
 
     return (
         <SafeAreaView style={{ padding: 20 }}>
-            <Text style={{ fontSize: 24, marginBottom: 12 }}>New Community Post</Text>
+            <Text style={{ fontSize: 24, marginBottom: 20, fontWeight: 'bold', textAlign: 'center', color: '#333', }}>New Community Post</Text>
             <TextInput
                 placeholder="What's your tip or question?"
                 value={title}
                 onChangeText={setTitle}
                 style={{
-                    borderColor: '#ccc',
-                    borderWidth: 1,
+                    borderColor: '#4682B4',
+                    borderWidth: 2,
                     padding: 10,
-                    borderRadius: 8,
+                    borderRadius: 10,
                     marginBottom: 20,
                 }}
             />
@@ -128,14 +128,14 @@ export default function NewPost() {
             <TouchableOpacity
                 onPress={pickImage}
                 style={{
-                    backgroundColor: '#eee',
+                    backgroundColor: '#4682B4',
                     padding: 10,
-                    borderRadius: 8,
+                    borderRadius: 10,
                     marginBottom: 15,
                     alignItems: 'center',
                 }}
             >
-                <Text>Select an Image 📸</Text>
+                <Text style={{color: 'white'}}>Select an Image 📸</Text>
             </TouchableOpacity>
 
             {imageUri && (
@@ -146,7 +146,7 @@ export default function NewPost() {
             )}
 
             <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>Select Category:</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 20, borderColor: '#4682B4', borderWidth: 2, padding: 10, borderRadius: 10 }}>
                 {categories.map((cat) => (
                     <TouchableOpacity
                         key={cat}
@@ -167,13 +167,13 @@ export default function NewPost() {
             <TouchableOpacity
                 onPress={handleSubmit}
                 style={{
-                    backgroundColor: '#007AFF',
+                    backgroundColor: '#4682B4',
                     padding: 15,
                     borderRadius: 12,
                     alignItems: 'center',
                 }}
             >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Submit</Text>
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, }}>Submit</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>

@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   logoutButton: {
-    backgroundColor: 'rgb(201, 47, 47)',
+    backgroundColor: '#4682B4',
     padding: 2,
     // marginHorizontal: 90,
     borderRadius: 20,
@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
   },
   viewButton: {
     marginTop: 8,
-    backgroundColor: 'rgb(127, 116, 180)',
+    backgroundColor: '#4682B4',
     padding: 2,
     // marginHorizontal: 90,
     borderRadius: 20,

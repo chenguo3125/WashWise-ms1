@@ -342,9 +342,10 @@ const styles = StyleSheet.create({
   },
   balance: {
     fontSize: 18,
-    color: '#007AFF',
+    fontWeight: '600',
     textAlign: 'center',
     marginBottom: 10,
+    color: '#4682B4',
   },
   subheading: {
     fontSize: 18,
