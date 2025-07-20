@@ -86,10 +86,11 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   balance: {
-    fontSize: 20,
-    color: '#007AFF',
+    fontSize: 18,
+    fontWeight: '600',
     textAlign: 'center',
     marginBottom: 20,
+    color: '#4682B4',
   },
   input: {
     borderWidth: 1,

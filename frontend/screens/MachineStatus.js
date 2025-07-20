@@ -46,7 +46,7 @@ export default function MachineStatus() {
           <Text style={[styles.machineStatus, { color: machine.availability ? 'green' : 'red' }]}>
             Status: {machine.availability ? 'Available' : 'In Use'}
           </Text>
-          <Text>Location: {machine.location}</Text>
+          <Text style={{fontSize: 13, color: '#555'}}>📍 {machine.location}</Text>
         </View>
       ))}
 
@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
     // backgroundColor: '#f4f7fc',
   },
   heading: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginBottom: 20,
+    textAlign: 'center',
   },
   machineCard1: {
     backgroundColor: '#A6DCC1',
@@ -91,12 +91,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
   },
   machineTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    fontSize: 16,
     marginBottom: 4,
   },
   machineStatus: {
-    fontWeight: '500',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   backButton: {
     backgroundColor: '#7f8c8d',

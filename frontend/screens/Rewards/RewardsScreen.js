@@ -14,10 +14,11 @@ import {
 import { db } from '../../config/firebaseConfig';
 
 const rewardItems = [
-  { id: '1', name: 'Free Wash Token', cost: 100 },
-  { id: '2', name: 'Dryer Discount Coupon', cost: 80 },
-  { id: '3', name: 'Laundry Bag', cost: 150 },
-  { id: '4', name: 'Detergent Sample Pack', cost: 50 },
+  { id: '1', name: 'Luck', cost: 1 },
+  { id: '2', name: 'Free Wash Token', cost: 100 },
+  { id: '3', name: 'Dryer Discount Coupon', cost: 80 },
+  { id: '4', name: 'Laundry Bag', cost: 150 },
+  { id: '5', name: 'Detergent Sample Pack', cost: 50 },
 ];
 
 export default function RewardsScreen() {
