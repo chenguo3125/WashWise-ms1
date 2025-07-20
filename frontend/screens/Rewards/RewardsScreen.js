@@ -94,7 +94,7 @@ export default function RewardsScreen() {
           </View>
         ))}
 
-        <TouchableOpacity onPress={() => router.push('/myrewards')} style={styles.button}>
+        <TouchableOpacity onPress={() => router.push('/myRewards')} style={styles.button}>
           <Text style={styles.buttonText}>My Rewards</Text>
         </TouchableOpacity>
 
