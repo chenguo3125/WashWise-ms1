@@ -1,20 +1,48 @@
 
-# Welcome to WashWise
+# Welcome to WashWise!
 
 This is an [Expo](https://expo.dev) mobile app created using [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).  
 The project is developed by **Guo Chen** and **Ziyi Xie**, aiming to improve the current digital laundry services in NUS dormitories.
 
 ---
 
-## 🚀 Features
+## App Overview
 
-- 🔄 **Real-time Machine Status** – View up-to-date availability of washing and drying machines
-- ⏰ **Machine-based Timers** – Start sessions with automatic countdown using `endTime` logic
-- 🔔 **Push Notifications** – Get reminders *before*, *on*, and *after* laundry cycle completion
-- 🎯 **Points & Rewards System** – Earn points for punctual collection; redeem for prizes
-- 💬 **Community & Chat** – Post, comment, and attach photos to communicate with dorm mates
-- 📸 **Cloud-based Image Hosting** – All post images are uploaded and managed via Cloudinary
-- 📱 **Responsive UI** – Intuitive design with bold contrast, action-driven buttons, and logical page grouping
+A Mobile App Aiming to Improve the Current Digital Laundry Services at NUS Dormitories
+
+---
+
+## Project Structure
+
+```
+washwise-ms1/
+├── frontend/
+│   ├── assets/         # Images and fonts
+│   ├── components/     # Reusable UI elements
+│   ├── config/         # Firebase + Cloudinary config
+│   ├── screens/        # Main app pages
+│   └── utils/          # Helper functions (e.g., formatting time, validation)
+├── scripts/            # Development scripts
+├── node_modules/       # Installed packages
+├── package.json
+├── README.md
+└── .gitignore, tsconfig.json, etc.
+
+```
+
+---
+
+## Features
+
+- **Real-time Machine Status** - Live availability tracking for washers/dryers
+- **Smart Session Management** - Auto-countdown timers with `endTime` logic
+- **Multi-stage Notifications** - Alerts `before`, `at`, and `after` cycle completion
+- **Rewards Ecosystem** - Earn points for timely collection; redeem prizes
+- **Community Hub** - Photo-enabled posts, comments, and chat
+- **Maintenance Reporting** - Issue ticketing for machine problems
+- **User Analytics** - Personal laundry statistics dashboard
+- **Cloud Media** - Image hosting via `Cloudinary`
+- **Accessible UI** - High-contrast design with intuitive navigation
 
 ---
 
@@ -62,56 +90,28 @@ This will launch the Expo development server. You can open the app in a:
 
 ---
 
-## App Overview
+## Test Key Flows
 
-You can begin development and testing by editing files inside the `frontend/screens` directory.
+Validate these core functionalities:
 
-### Key Screens:
+1. **Auth & Registration**  
+   Firebase email/password authentication
+   
+2. **Laundry Session Lifecycle**  
+   - Start: Select machine & time → auto-deduct → timer begins  
+   - Collect: Press "Collect" → earn 0–50 points (punctuality-based)  
 
-- `HomeScreen.js` – main dashboard
-- `LoginScreen.js` and `RegisterScreen.js` – Firebase authentication
-- `MachinesFullList.js` – real-time machine status
-- `MyLaundry.js` – user's active laundry sessions
-- `RewardsScreen.js` – points & incentives
-- `MyRewards.js` – points & incentives
-- `Community.js` – feedback & nudges
-- `NewPost.js` – create new post
-- `ChatScreen.js` – live chat & discussion
-- `DepositScreen.js` – top up balance
+3. **Rewards System**  
+   Browse and redeem items → points deducted  
 
----
+4. **Community Hub**  
+   - Create posts: Choose category + attach images → auto-tagged  
+   - Engage: Real-time comments with image attachments  
 
-## Test the App
-
-You can now test these key user flows:
-
-1. **Login/Register**: Firebase email/password authentication
-2. **Start Session**: Pick a machine + time, auto-deduct credit, timer starts
-3. **Collect Laundry**: Press "Collect" → receive 0–50 pts depending on punctuality
-4. **Check Rewards**: View or redeem items, see points deducted
-5. **Post to Community**: Select category, attach image, submit → auto-tag and color-coded
-6. **Chat on Posts**: Real-time replies with optional image attachments
-7. **Deposit Funds**: Top up balance to enable session starts
-
----
-
-## Project Structure
-
-```
-washwise-ms1/
-├── frontend/
-│   ├── assets/         # Images and fonts
-│   ├── components/     # Reusable UI elements
-│   ├── config/         # Firebase + Cloudinary config
-│   ├── screens/        # Main app pages
-│   └── utils/          # Helper functions (e.g., formatting time, validation)
-├── scripts/            # Development scripts
-├── node_modules/       # Installed packages
-├── package.json
-├── README.md
-└── .gitignore, tsconfig.json, etc.
-
-```
+5. **Operations**  
+   - Deposit: Add funds to enable sessions  
+   - Report: Submit machine maintenance tickets  
+   - Analytics: View/share personal laundry stats
 
 ---
 
