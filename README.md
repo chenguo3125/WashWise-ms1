@@ -1,8 +1,7 @@
 
 # Welcome to WashWise!
 
-This is an [Expo](https://expo.dev) mobile app created using [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).  
-The project is developed by **Guo Chen** and **Ziyi Xie**, aiming to improve the current digital laundry services in NUS dormitories.
+The project is developed by **Guo Chen** and **Ziyi Xie**, which is an [Expo](https://expo.dev) mobile app created using [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).  
 
 ---
 
