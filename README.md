@@ -1,7 +1,7 @@
 
 # Welcome to WashWise!
 
-The project is developed by **Guo Chen** and **Ziyi Xie**, which is an [Expo](https://expo.dev) mobile app created using [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).  
+The project is developed by [**Guo Chen**](https://github.com/chenguo3125) and [**Ziyi Xie**](https://github.com/har4yyyy), which is an [Expo](https://expo.dev) mobile app created using [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).  
 
 ---
 
