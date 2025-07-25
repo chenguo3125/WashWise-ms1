@@ -52,6 +52,7 @@ export default function Community() {
 
 
   const renderItem = ({ item }) => (
+    <TouchableOpacity onPress = { () => router.push(`/post/${item.id}`)}>
     <View style={styles.card}>
       {item.image ? (
         <Image source={{ uri: item.image }} style={styles.image} />
@@ -73,6 +74,8 @@ export default function Community() {
       </View>
 
     </View>
+
+    </TouchableOpacity>
   );
 
   const filteredPosts =
@@ -120,7 +123,7 @@ export default function Community() {
         />
       )}
 
-      <TouchableOpacity onPress={() => router.push('/newPost')} style={styles.postButton}>
+      <TouchableOpacity onPress={() => router.push('/newpost')} style={styles.postButton}>
         <Text style={styles.buttonText}>+ New Post</Text>
       </TouchableOpacity>
 

@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   SafeAreaView,
@@ -18,7 +19,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import { db } from '../../config/firebaseConfig';
 

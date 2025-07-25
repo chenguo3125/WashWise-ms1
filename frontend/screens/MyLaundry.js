@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, getDoc, addDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -275,10 +275,10 @@ export default function MyLaundry() {
                     fontWeight: '600',
                     marginBottom: 6,
                   }}>
-                    {inUse ? 'In Use' : 'Available'}
+                    {!inUse ? 'Available' : item.maintenance ? 'Maintenance' : 'In Use'}
                   </Text>
 
-                  {inUse && (
+                  {(inUse && !item.maintenance) && (
                     <>
                       <Text style={styles.timer}>⏳ {formatTime(item.remaining || 0)}</Text>
                       {item.userId === user?.uid && (
