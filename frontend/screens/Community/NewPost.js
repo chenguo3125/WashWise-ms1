@@ -10,10 +10,10 @@ export default function NewPost() {
     const [title, setTitle] = useState('');
     const router = useRouter();
     const user = getAuth().currentUser;
-    const categories = ['Laundry Tips', 'Report Issues', 'Reminders', 'Others'];
+    const categories = ['Laundry Tips', 'Seek Help', 'Reminders', 'Others'];
     const categoryColors = {
         'Laundry Tips': '#90EE90',     // light green
-        'Report Issues': '#FF6B6B',    // red
+        'Seek Help': '#FF6B6B',    // red
         'Reminders': '#FFD700',        // yellow
         'Others': '#555555',           // dark grey
     };

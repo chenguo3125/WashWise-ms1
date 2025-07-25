@@ -20,10 +20,10 @@ import { db } from '../../config/firebaseConfig';
   { id: '4', title: 'Fold Like a Pro', image: '' },
   { id: '5', title: 'Eco-friendly Tips', image: '' },
 ];*/
-const categories = ['Laundry Tips', 'Report Issues', 'Reminders', 'Others'];
+const categories = ['Laundry Tips', 'Seek Help', 'Reminders', 'Others'];
 const categoryColors = {
   'Laundry Tips': '#90EE90',     // light green
-  'Report Issues': '#FF6B6B',    // red
+  'Seek Help': '#FF6B6B',    // red
   'Reminders': '#FFD700',        // yellow
   'Others': '#555555',           // dark grey
 };
