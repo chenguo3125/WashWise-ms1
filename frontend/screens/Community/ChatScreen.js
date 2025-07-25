@@ -3,6 +3,8 @@ import { getAuth } from 'firebase/auth';
 import {
   addDoc,
   collection,
+  doc,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -13,14 +15,26 @@ import {
   Alert,
   FlatList,
   Image,
-  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import pfp0 from '../../assets/pfp/pfp0.png';
+import pfp1 from '../../assets/pfp/pfp1.png';
+import pfp2 from '../../assets/pfp/pfp2.png';
+import pfp3 from '../../assets/pfp/pfp3.png';
+import pfp4 from '../../assets/pfp/pfp4.png';
+import pfp5 from '../../assets/pfp/pfp5.png';
+import pfp6 from '../../assets/pfp/pfp6.png';
+import pfp7 from '../../assets/pfp/pfp7.png';
 import { db } from '../../config/firebaseConfig';
+
+const samplePfps = [pfp0, pfp1, pfp2, pfp3, pfp4, pfp5, pfp6, pfp7];
+
 
 export default function ChatScreen() {
   const [message, setMessage] = useState('');
@@ -104,26 +118,69 @@ export default function ChatScreen() {
       orderBy('createdAt', 'asc')
     );
 
-    const unsubscribe = onSnapshot(q, snapshot => {
-      const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setMessages(list);
+    const unsubscribe = onSnapshot(q, async snapshot => {
+      const enriched = await Promise.all(
+        snapshot.docs.map(async docSnap => {
+          const msg = docSnap.data();
+          let userData = { name: 'Anonymous', pfpIndex: 0 };
+
+          if (msg.userId) {
+            const userRef = collection(db, 'users');
+            const userDoc = await getDoc(doc(db, 'users', msg.userId));
+            if (userDoc.exists()) {
+              userData = userDoc.data();
+            }
+          }
+
+          return {
+            id: docSnap.id,
+            ...msg,
+            user: userData,
+          };
+        })
+      );
+
+      setMessages(enriched);
     });
 
     return unsubscribe;
   }, []);
 
-  const renderItem = ({ item }) => (
-    <View style={styles.messageContainer}>
-      <Text style={styles.sender}>{item.email || 'Anonymous'}</Text>
-      {item.text ? <Text style={styles.messageText}>{item.text}</Text> : null}
-      {item.image && (
-        <Image source={{ uri: item.image }} style={styles.image} />
-      )}
-    </View>
-  );
+
+  const formatTime = (ts) => {
+    if (!ts) return '';
+    const date = ts.toDate ? ts.toDate() : new Date(ts);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const renderItem = ({ item }) => {
+    const user = item.user || {};
+    const pfp = samplePfps[user.pfpIndex || 0];
+
+    return (
+      <View style={styles.messageContainer}>
+        <View style={styles.messageHeader}>
+          <Image source={pfp} style={styles.pfp} />
+          <View style={{ marginLeft: 8 }}>
+            <Text style={styles.sender}>{user.name || user.email || 'Anonymous'}</Text>
+            <Text style={styles.timestamp}>{formatTime(item.createdAt)}</Text>
+          </View>
+        </View>
+        {item.text ? <Text style={styles.messageText}>{item.text}</Text> : null}
+        {item.image && (
+          <Image source={{ uri: item.image }} style={styles.image} />
+        )}
+      </View>
+    );
+  };
+
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    keyboardVerticalOffset={80} // adjust if needed
+  >
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
@@ -145,7 +202,7 @@ export default function ChatScreen() {
           <Text style={styles.sendText}>Send</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -158,6 +215,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 10,
   },
+  pfp: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+  },
+  messageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+
+  timestamp: {
+    fontSize: 10,
+    color: 'gray',
+  },
+
   sender: {
     fontSize: 12,
     color: '#888',
