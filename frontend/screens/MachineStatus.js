@@ -44,7 +44,7 @@ export default function MachineStatus() {
         <View key={machine.id} style={machine.availability ? styles.machineCard1 : styles.machineCard2}>
           <Text style={styles.machineTitle}>{machine.type} No.{machine.index}</Text>
           <Text style={[styles.machineStatus, { color: machine.availability ? 'green' : 'red' }]}>
-            Status: {machine.availability ? 'Available' : 'In Use'}
+            Status: {machine.availability ? 'Available' : machine.maintenance ? 'Maintenance' : 'In Use'}
           </Text>
           <Text style={{fontSize: 13, color: '#555'}}>📍 {machine.location}</Text>
         </View>

@@ -2,61 +2,85 @@ import { useRouter } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { styles } from './HomeScreen.styles';
 import {
   Alert,
+  Image,
   ScrollView,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+import pfp0 from '../../assets/pfp/pfp0.png';
+import pfp1 from '../../assets/pfp/pfp1.png';
+import pfp2 from '../../assets/pfp/pfp2.png';
+import pfp3 from '../../assets/pfp/pfp3.png';
+import pfp4 from '../../assets/pfp/pfp4.png';
+import pfp5 from '../../assets/pfp/pfp5.png';
+import pfp6 from '../../assets/pfp/pfp6.png';
+import pfp7 from '../../assets/pfp/pfp7.png';
 import { auth, db } from '../../config/firebaseConfig';
 import { registerForPushNotificationsAsync } from '../../utils/notificationUtils';
+import { styles } from './HomeScreen.styles';
+
+const samplePfps = [pfp0, pfp1, pfp2, pfp3, pfp4, pfp5, pfp6, pfp7];
 
 export default function HomeScreen() {
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
+  const [pfpIndex, setPfpIndex] = useState(0);
   const [machines, setMachines] = useState([]);
   const [timers, setTimers] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const userRef = doc(db, 'users', user.uid);
-      const userSnap = await getDoc(userRef);
+    let unsubscribeUserSnap = () => { };
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, 'users', user.uid);
 
-      if (!userSnap.exists()) {
-        await setDoc(userRef, {
-          email: user.email,
-          name: user.displayName || '',
-          balance: 0,
-          points: 0,
-          createdAt: new Date(),
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          await setDoc(userRef, {
+            email: user.email,
+            name: user.displayName || '',
+            balance: 0,
+            points: 0,
+            pfpIndex: 0,
+            createdAt: new Date(),
+          });
+        }
+
+        unsubscribeUserSnap = onSnapshot(userRef, (snap) => {
+          if (snap.exists()) {
+            const data = snap.data();
+            setUserEmail(data.email);
+            setUserName(data.name || data.email);
+            setPfpIndex(data.pfpIndex ?? 0);
+          }
         });
-      }else {
-        const data = userSnap.data();
-        setUserEmail(data.email);
-        setUserName(data.name || 'WashWiser');
       }
-    }
-  });
-  return unsubscribe;
-}, []);
+    });
+
+    return () => {
+      unsubscribeAuth();
+      unsubscribeUserSnap();
+    };
+  }, []);
+
 
   useEffect(() => {
-  const saveTokenToFirestore = async () => {
-    const token = await registerForPushNotificationsAsync();
-    const user = auth.currentUser;
+    const saveTokenToFirestore = async () => {
+      const token = await registerForPushNotificationsAsync();
+      const user = auth.currentUser;
 
-    if (user && token) {
-      const userRef = doc(db, 'users', user.uid);
-      await setDoc(userRef, { expoPushToken: token }, { merge: true });
-    }
-  };
+      if (user && token) {
+        const userRef = doc(db, 'users', user.uid);
+        await setDoc(userRef, { expoPushToken: token }, { merge: true });
+      }
+    };
 
-  saveTokenToFirestore();
-}, []);
+    saveTokenToFirestore();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -72,7 +96,7 @@ export default function HomeScreen() {
     const unsubscribeMachines = onSnapshot(collection(db, 'machines'), (snapshot) => {
       const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       list.sort((a, b) => (b.availability === true) - (a.availability === true));
-      
+
       list.sort((a, b) => {
         if (a.availability !== b.availability) {
           return a.availability ? -1 : 1;
@@ -140,13 +164,23 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.welcome}>Welcome to WashWise@NUS</Text>
-        {userName !== '' && (
-          <Text style={[styles.welcome, { fontWeight: 'bold', color: '#4682B4' }]}>
-            {userName}
-          </Text>
-        )}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.welcome}>Welcome to WashWise@NUS</Text>
+            {userName !== '' && (
+              <Text style={[styles.welcome, { fontWeight: 'bold', color: '#4682B4' }]}>
+                {userName}
+              </Text>
+            )}
+          </View>
 
+          <TouchableOpacity onPress={() => router.push('/profile')}>
+            <Image
+              source={samplePfps[pfpIndex]}
+              style={{ width: 40, height: 40, borderRadius: 20, marginLeft: 12 }}
+            />
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Machine Availability</Text>
