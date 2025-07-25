@@ -116,9 +116,9 @@ export default function HomeScreen() {
       if (!userId) return;
 
       const q = query(
-        collection(db, 'laundrySessions'),
+        collection(db, 'laundry_sessions'),
         where('userId', '==', userId),
-        where('status', '==', 'running')
+        where('status', '==', 'in_progress')
       );
 
       const snapshot = await getDocs(q);
@@ -127,12 +127,12 @@ export default function HomeScreen() {
       for (const session of snapshot.docs) {
         const data = session.data();
         const start = data.startTime.toMillis();
-        const end = start + data.duration * 1000;
+        const end = start + data.duration * 1000 * 60;
         const secondsLeft = Math.max(0, Math.floor((end - Date.now()) / 1000));
 
         newTimers.push({
           id: session.id,
-          machineId: data.machineId,
+          machineName: `${data.machineType} No.${data.machineIndex}`,
           remaining: secondsLeft,
         });
 
@@ -177,7 +177,7 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => router.push('/profile')}>
             <Image
               source={samplePfps[pfpIndex]}
-              style={{ width: 40, height: 40, borderRadius: 20, marginLeft: 12 }}
+              style={{ width: 60, height: 60, borderRadius: 30, marginLeft: 12 }}
             />
           </TouchableOpacity>
         </View>
@@ -203,36 +203,36 @@ export default function HomeScreen() {
         {timers.length > 0 && (
           <View style={styles.timerScrollContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {timers.map(timer => (
+              {timers.map((timer) => (
                 <View key={timer.id} style={styles.timerCard}>
-                  <Text style={styles.timerText}>⏳ Machine: {timer.machineId}</Text>
-                  <Text style={styles.timerText}>Time Left: {formatTime(timer.remaining)}</Text>
+                  <Text style={styles.machineName}>
+                    {timer.machineName}
+                  </Text>
+                  <Text style={styles.timerText}>
+                    ⏳ <Text style={styles.timeValue}>{formatTime(timer.remaining)}</Text>
+                  </Text>
                 </View>
               ))}
             </ScrollView>
           </View>
         )}
 
-        <View style={styles.navButtons}>
-          <TouchableOpacity onPress={() => router.push('/myLaundry')} style={styles.button}>
-            <Text style={styles.buttonText}>My Laundry</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/rewards')} style={styles.button}>
-            <Text style={styles.buttonText}>Rewards</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.push('/myLaundry')}
+          style={styles.laundryCTA}
+        >
+          <Text style={styles.laundryCTAText}>My Laundry</Text>
+        </TouchableOpacity>
+
+        <View style={styles.secondaryNav}>
           <TouchableOpacity onPress={() => router.push('/community')} style={styles.button}>
-            <Text style={styles.buttonText}>Community</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/deposit')} style={styles.button}>
-            <Text style={styles.buttonText}>Deposit</Text>
+            <Text style={styles.secondaryText}>Community</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/report')} style={styles.button}>
-            <Text style={styles.buttonText}>Report</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/activity')} style={styles.button}>
-            <Text style={styles.buttonText}>Activity</Text>
+            <Text style={styles.secondaryText}>Report</Text>
           </TouchableOpacity>
         </View>
+
       </View>
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutText}>Log Out</Text>

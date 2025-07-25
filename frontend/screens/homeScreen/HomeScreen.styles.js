@@ -116,20 +116,81 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   timerScrollContainer: {
-    paddingVertical: 10,
-    marginBottom: 10,
+    marginVertical: 12,
+    paddingLeft: 10,
   },
+
   timerCard: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 10,
-    minWidth: 160,
+    backgroundColor: '#fff8e1',
+    padding: 14,
+    borderRadius: 16,
+    marginRight: 12,
+    minWidth: 180,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 4,
+  },
+
+  machineName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FF6F00',
+    marginBottom: 6,
+  },
+
+  timerText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+  },
+
+  timeValue: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#D32F2F',
+  },
+
+  laundryCTA: {
+    marginTop: 20,
+    backgroundColor: '#f28705',
+    paddingVertical: 20,
+    borderRadius: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
     elevation: 2,
   },
-  timerText: {
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
+
+  laundryCTAText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
   },
+
+  secondaryNav: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginTop: 15,
+    gap: 5,
+  },
+
+  secondaryButton: {
+    backgroundColor: '#fff',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+
+  secondaryText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4682B4',
+  },
+
 });

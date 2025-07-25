@@ -8,7 +8,8 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    TextInput, TouchableOpacity
+    TextInput, TouchableOpacity,
+    View
 } from 'react-native';
 import pfp0 from '../../assets/pfp/pfp0.png';
 import pfp1 from '../../assets/pfp/pfp1.png';
@@ -66,11 +67,14 @@ export default function ProfileScreen() {
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.heading}>Edit Profile</Text>
+
             <Text style={styles.label}>Profile Picture</Text>
-            <ScrollView horizontal
+            <ScrollView
+                horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexDirection: 'row', paddingVertical: 8 }}
-                style={{ marginVertical: 10 }}>
+                style={{ marginVertical: 10 }}
+            >
                 {samplePfps.map((img, idx) => (
                     <TouchableOpacity key={idx} onPress={() => setPfpIndex(idx)}>
                         <Image
@@ -84,7 +88,6 @@ export default function ProfileScreen() {
                 ))}
             </ScrollView>
 
-
             <Text style={styles.label}>Username</Text>
             <TextInput
                 style={styles.input}
@@ -93,13 +96,29 @@ export default function ProfileScreen() {
                 placeholder="Enter your name"
             />
 
-            <Text style={styles.label}>Points: {points}</Text>
-            <Text style={styles.label}>Balance: ${balance.toFixed(2)}</Text>
-
             <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
                 <Text style={styles.saveText}>Save</Text>
             </TouchableOpacity>
+
+            <View style={styles.statsContainer}>
+                <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/rewards')}>
+                    <Text style={styles.actionLabel}>🎁 Rewards</Text>
+                    <Text style={styles.actionValue}>{points} points</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/deposit')}>
+                    <Text style={styles.actionLabel}>💰 Deposit</Text>
+                    <Text style={styles.actionValue}>${balance.toFixed(2)}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/activity')}>
+                    <Text style={styles.actionLabel}>📜 Activity</Text>
+                    <Text >view recent actions ›</Text>
+                </TouchableOpacity>
+            </View>
+
         </ScrollView>
+
     );
 }
 
@@ -131,4 +150,52 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+    statsContainer: {
+        marginTop: 30,
+        backgroundColor: '#f9f9f9',
+        padding: 16,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3, // Android shadow
+    },
+
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 12,
+    },
+
+    actionRow: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingVertical: 14,
+  paddingHorizontal: 18,
+  backgroundColor: '#f3f6fb',
+  borderRadius: 10,
+  marginVertical: 6,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.08,
+  shadowRadius: 2,
+  elevation: 1,
+},
+
+actionLabel: {
+  fontSize: 16,
+  fontWeight: '500',
+  color: '#333',
+},
+
+actionValue: {
+  fontSize: 16,
+  fontWeight: '700',
+  color: '#4682B4',
+},
+
+
 });

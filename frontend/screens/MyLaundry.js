@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { addDoc, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, Timestamp, updateDoc } from 'firebase/firestore';
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -150,7 +150,7 @@ export default function MyLaundry() {
       machineId: selectedMachine.id,
       machineType: selectedMachine.type,
       machineIndex: selectedMachine.index,
-      startTime: new Date(),
+      startTime: Timestamp.now(),
       endTime,
       duration: duration/ 60,
       price,
