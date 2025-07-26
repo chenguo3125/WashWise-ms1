@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   welcome: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
     fontStyle: 'italic',
@@ -34,6 +34,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+    marginTop: 15,
   },
   machineList: {
     backgroundColor: '#fff',
@@ -42,6 +43,7 @@ export const styles = StyleSheet.create({
     maxHeight: 275,
     borderColor: '#4682B4',
     borderWidth: 1,
+    marginBottom: 10,
   },
   machineCard: {
     backgroundColor: '#f2f4f8',
@@ -93,6 +95,8 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     textAlign: 'center',
     fontSize: 16,
+    paddingHorizontal: 125,
+    marginTop: 15,
   },
   logoutText: {
     color: 'white',
@@ -118,71 +122,78 @@ export const styles = StyleSheet.create({
   timerScrollContainer: {
     marginVertical: 0,
     paddingLeft: 0,
+    marginTop: -15,
   },
-
   timerCard: {
     backgroundColor: '#fff8e1',
-    padding: 14,
+    padding: 15,
     borderRadius: 16,
     marginRight: 12,
-    minWidth: 180,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 4,
+    // minWidth: 10,
+    // shadowColor: '#000',
+    // shadowOpacity: 0.1,
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowRadius: 6,
+    // elevation: 4,
     paddingBottom: 12,
+    marginBottom: 10,
   },
-
   stopButton: {
     backgroundColor: '#FF3B30',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    // paddingVertical: 6,
+    // paddingHorizontal: 12,
     borderRadius: 20,
     marginTop: 8,
+    alignItems: 'center',
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 14,
   },
-
   machineName: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '700',
     color: '#FF6F00',
     marginBottom: 6,
   },
 
   timerText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#333',
   },
 
   timeValue: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: '800',
     color: '#D32F2F',
   },
 
   laundryCTA: {
-    marginTop: 20,
-    backgroundColor: '#f28705',
-    paddingVertical: 20,
-    borderRadius: 16,
+    marginTop: 0,
+    borderWidth: 1,
+    borderColor: '#4682B4',
+    borderRadius: 12,
+    // marginBottom: 5,
+    overflow: 'hidden',
+    // width: '48%',
+    backgroundColor: 'white',
+    padding: 22,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 2,
+    justifyContent: 'center',
+    paddingVertical: 20,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.15,
+    // shadowRadius: 3,
+    // elevation: 2,
   },
 
   laundryCTAText: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#4682B4',
   },
 
   secondaryNav: {

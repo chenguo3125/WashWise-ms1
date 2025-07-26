@@ -150,7 +150,7 @@ export default function LaundryAnalytics() {
       )}
 
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Text style={styles.backText}>← Back to Home</Text>
+        <Text style={styles.backText}>Back</Text>
       </TouchableOpacity>
     </ScrollView>
   );

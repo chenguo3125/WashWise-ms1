@@ -239,7 +239,7 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => router.push('/profile')}>
             <Image
               source={samplePfps[pfpIndex]}
-              style={{ width: 60, height: 60, borderRadius: 30, marginLeft: 12 }}
+              style={{ width: 45, height: 45, borderRadius: 30, marginRight: 10 }}
             />
           </TouchableOpacity>
         </View>
@@ -257,7 +257,7 @@ export default function HomeScreen() {
               ))}
             </ScrollView>
             <TouchableOpacity onPress={() => router.push('/machineStatus')} style={styles.viewButton}>
-              <Text style={styles.viewText}>View All →</Text>
+              <Text style={styles.viewText}>View All</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -299,12 +299,15 @@ export default function HomeScreen() {
           <TouchableOpacity onPress={() => router.push('/report')} style={styles.button}>
             <Text style={styles.secondaryText}>Report</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutText}>Log Out</Text>
+          </TouchableOpacity>
         </View>
 
       </View>
-      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+      {/* <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutText}>Log Out</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }

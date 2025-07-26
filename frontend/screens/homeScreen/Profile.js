@@ -68,7 +68,7 @@ export default function ProfileScreen() {
         <ScrollView style={styles.container}>
             <Text style={styles.heading}>My Profile</Text>
 
-            <Text style={styles.label}>Profile Picture</Text>
+            <Text style={styles.label}>Profile Photo</Text>
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -102,20 +102,24 @@ export default function ProfileScreen() {
 
             <View style={styles.statsContainer}>
                 <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/rewards')}>
-                    <Text style={styles.actionLabel}>🎁 Rewards</Text>
+                    <Text style={styles.actionLabel}>Rewards</Text>
                     <Text style={styles.actionValue}>{points} points</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/deposit')}>
-                    <Text style={styles.actionLabel}>💰 Deposit</Text>
+                    <Text style={styles.actionLabel}>Deposit</Text>
                     <Text style={styles.actionValue}>${balance.toFixed(2)}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.actionRow} onPress={() => router.push('/activity')}>
-                    <Text style={styles.actionLabel}>📜 Activity</Text>
+                    <Text style={styles.actionLabel}>Activity</Text>
                     <Text >view recent actions ›</Text>
                 </TouchableOpacity>
             </View>
+
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                <Text style={styles.backText}>Back</Text>
+            </TouchableOpacity>
 
         </ScrollView>
 
@@ -123,11 +127,27 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { padding: 20 },
+    container: { padding: 25 },
     heading: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
-    label: { fontWeight: 'bold', marginTop: 16 },
+    label: { fontWeight: 'bold', marginTop: 10 },
     input: {
         borderWidth: 1, borderColor: '#ccc', padding: 8, marginTop: 4, borderRadius: 6,
+    },
+    backButton: {
+        backgroundColor: '#7f8c8d',
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 25,
+        padding: 15,
+        // paddingHorizontal: 24,
+        // paddingVertical: 12,
+        elevation: 2,
+    },
+    backText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
     },
     pfpList: {
         flexDirection: 'row',
@@ -138,20 +158,23 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 30,
+        marginRight: 12,
     },
     saveButton: {
         backgroundColor: '#4682B4',
-        padding: 12,
+        padding: 15,
         borderRadius: 8,
         alignItems: 'center',
-        marginTop: 24,
+        marginTop: 20,
     },
     saveText: {
         color: 'white',
-        fontWeight: 'bold',
+        fontSize: 16,
+        fontWeight: '600',
+        textAlign: 'center',
     },
     statsContainer: {
-        marginTop: 30,
+        marginTop: 25,
         backgroundColor: '#f9f9f9',
         padding: 16,
         borderRadius: 12,
@@ -170,32 +193,28 @@ const styles = StyleSheet.create({
     },
 
     actionRow: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  paddingVertical: 14,
-  paddingHorizontal: 18,
-  backgroundColor: '#f3f6fb',
-  borderRadius: 10,
-  marginVertical: 6,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.08,
-  shadowRadius: 2,
-  elevation: 1,
-},
-
-actionLabel: {
-  fontSize: 16,
-  fontWeight: '500',
-  color: '#333',
-},
-
-actionValue: {
-  fontSize: 16,
-  fontWeight: '700',
-  color: '#4682B4',
-},
-
-
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 14,
+        paddingHorizontal: 18,
+        backgroundColor: '#f3f6fb',
+        borderRadius: 10,
+        marginVertical: 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 2,
+        elevation: 1,
+    },
+    actionLabel: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#333',
+    },
+    actionValue: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#4682B4',
+    },
 });

@@ -123,8 +123,8 @@ export default function Community() {
         />
       )}
 
-      <TouchableOpacity onPress={() => router.push('/newpost')} style={styles.postButton}>
-        <Text style={styles.buttonText}>+ New Post</Text>
+      <TouchableOpacity onPress={() => router.push('/newPost')} style={styles.postButton}>
+        <Text style={styles.buttonText}>Add New Post</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.push('/chat')} style={styles.button}>
@@ -132,7 +132,7 @@ export default function Community() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Text style={styles.backText}>← Back to Home</Text>
+        <Text style={styles.backText}>Back</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
