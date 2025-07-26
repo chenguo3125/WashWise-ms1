@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     fontWeight: '700',
-    textAlign: 'center',
+    justifyContent: 'center',
   },
   logoutButton: {
     backgroundColor: '#4682B4',
@@ -116,8 +116,8 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   timerScrollContainer: {
-    marginVertical: 12,
-    paddingLeft: 10,
+    marginVertical: 0,
+    paddingLeft: 0,
   },
 
   timerCard: {
@@ -131,6 +131,20 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     elevation: 4,
+    paddingBottom: 12,
+  },
+
+  stopButton: {
+    backgroundColor: '#FF3B30',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    marginTop: 8,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 
   machineName: {
@@ -175,7 +189,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginTop: 15,
+    marginTop: 10,
     gap: 5,
   },
 
