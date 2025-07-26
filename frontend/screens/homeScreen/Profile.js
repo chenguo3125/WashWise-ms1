@@ -66,7 +66,7 @@ export default function ProfileScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.heading}>Edit Profile</Text>
+            <Text style={styles.heading}>My Profile</Text>
 
             <Text style={styles.label}>Profile Picture</Text>
             <ScrollView

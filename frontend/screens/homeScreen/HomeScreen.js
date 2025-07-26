@@ -1,6 +1,7 @@
+import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -31,6 +32,64 @@ export default function HomeScreen() {
   const [machines, setMachines] = useState([]);
   const [timers, setTimers] = useState([]);
   const router = useRouter();
+
+  const handleStopMachine = async (timer) => {
+    const { machineId, reminderId, sessionId } = timer;
+
+    try {
+      if (reminderId) {
+        await Notifications.cancelScheduledNotificationAsync(reminderId);
+      }
+
+      const machineRef = doc(db, 'machines', machineId);
+      const machineSnap = await getDoc(machineRef);
+      const machineData = machineSnap.data();
+
+      const now = Date.now();
+      const endTime = machineData.endTime;
+      const minutesLate = (now - endTime) / 60000;
+      let pointsToAward = 0;
+
+      if (minutesLate >= 0 && minutesLate <= 15) {
+        pointsToAward = Math.round(50 * (1 - minutesLate / 15));
+      }
+
+      const user = auth.currentUser;
+      if (pointsToAward > 0 && user) {
+        const userRef = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userRef);
+        const currentPoints = userSnap.data().points || 0;
+        await updateDoc(userRef, { points: currentPoints + pointsToAward });
+      }
+
+      const sessionRef = doc(db, 'laundry_sessions', sessionId);
+      await updateDoc(sessionRef, {
+        status: 'finished',
+        endTime: Timestamp.fromMillis(now),
+        pointsAwarded: pointsToAward,
+      });
+
+      await updateDoc(machineRef, {
+        availability: true,
+        endTime: null,
+        userId: null,
+        reminderId: null,
+        sessionId: null,
+      });
+
+      setTimers(prev => prev.filter(t => t.id !== timer.id));
+
+      if (minutesLate > 15) {
+        Alert.alert('Too Late', 'You missed the 15-minute window. No points awarded.');
+      } else if (pointsToAward > 0) {
+        Alert.alert('Good Job!', `You earned ${pointsToAward} points for timely collection.`);
+      } else {
+        Alert.alert('Cancelled', 'Your laundry session has been cancelled.');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
 
   useEffect(() => {
     let unsubscribeUserSnap = () => { };
@@ -134,10 +193,13 @@ export default function HomeScreen() {
           id: session.id,
           machineName: `${data.machineType} No.${data.machineIndex}`,
           remaining: secondsLeft,
+          machineId: data.machineId,
+          reminderId: data.reminderId,
+          sessionId: session.id,
         });
 
         if (secondsLeft === 0) {
-          await updateDoc(doc(db, 'laundrySessions', session.id), { status: 'complete' });
+          await updateDoc(doc(db, 'laundry_sessions', session.id), { status: 'complete' });
           await updateDoc(doc(db, 'machines', data.machineId), { availability: true });
         }
       }
@@ -205,12 +267,18 @@ export default function HomeScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {timers.map((timer) => (
                 <View key={timer.id} style={styles.timerCard}>
-                  <Text style={styles.machineName}>
-                    {timer.machineName}
-                  </Text>
+                  <Text style={styles.machineName}>{timer.machineName}</Text>
                   <Text style={styles.timerText}>
                     ⏳ <Text style={styles.timeValue}>{formatTime(timer.remaining)}</Text>
                   </Text>
+                  <TouchableOpacity
+                    style={styles.stopButton}
+                    onPress={() => handleStopMachine(timer)}
+                  >
+                    <Text style={styles.buttonText}>
+                      {timer.remaining === 0 ? 'Collect' : 'Cancel'}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               ))}
             </ScrollView>
