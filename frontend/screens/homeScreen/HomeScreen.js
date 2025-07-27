@@ -34,13 +34,9 @@ export default function HomeScreen() {
   const router = useRouter();
 
   const handleStopMachine = async (timer) => {
-    const { machineId, reminderId, sessionId } = timer;
+    const { machineId, reminderId } = timer;
 
     try {
-      if (reminderId) {
-        await Notifications.cancelScheduledNotificationAsync(reminderId);
-      }
-
       const machineRef = doc(db, 'machines', machineId);
       const machineSnap = await getDoc(machineRef);
       const machineData = machineSnap.data();
@@ -48,43 +44,53 @@ export default function HomeScreen() {
       const now = Date.now();
       const endTime = machineData.endTime;
       const minutesLate = (now - endTime) / 60000;
-      let pointsToAward = 0;
+      const user = auth.currentUser;
 
+      // Cancel notifications
+      if (reminderId) {
+        await Notifications.cancelScheduledNotificationAsync(reminderId);
+      }
+
+      // Calculate points
+      let pointsToAward = 0;
       if (minutesLate >= 0 && minutesLate <= 15) {
         pointsToAward = Math.round(50 * (1 - minutesLate / 15));
       }
 
-      const user = auth.currentUser;
-      if (pointsToAward > 0 && user) {
+      // Update machine status
+      await updateDoc(machineRef, {
+        availability: true,
+        endTime: null,
+        userId: null,
+        reminderId: null,
+      });
+
+      // Update session status
+      await updateDoc(doc(db, 'laundry_sessions', timer.id), {
+        status: 'finished',
+        endTime: Timestamp.fromMillis(now),
+        pointsAwarded: pointsToAward,
+      });
+
+      // Award points if applicable
+      if (pointsToAward > 0 && user?.uid) {
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
         const currentPoints = userSnap.data().points || 0;
         await updateDoc(userRef, { points: currentPoints + pointsToAward });
       }
 
-      const sessionRef = doc(db, 'laundry_sessions', sessionId);
-      await updateDoc(sessionRef, {
-        status: 'finished',
-        endTime: Timestamp.fromMillis(now),
-        pointsAwarded: pointsToAward,
-      });
-
-      await updateDoc(machineRef, {
-        availability: true,
-        endTime: null,
-        userId: null,
-        reminderId: null,
-        sessionId: null,
-      });
-
+      // Remove timer from UI
       setTimers(prev => prev.filter(t => t.id !== timer.id));
 
+      // Show appropriate message
       if (minutesLate > 15) {
         Alert.alert('Too Late', 'You missed the 15-minute window. No points awarded.');
       } else if (pointsToAward > 0) {
         Alert.alert('Good Job!', `You earned ${pointsToAward} points for timely collection.`);
       } else {
-        Alert.alert('Cancelled', 'Your laundry session has been cancelled.');
+        Alert.alert(timer.remaining <= 0 ? 'Collected' : 'Cancelled',
+          timer.remaining <= 0 ? 'Your laundry has been collected.' : 'Your session has been cancelled.');
       }
     } catch (error) {
       Alert.alert('Error', error.message);
@@ -181,33 +187,25 @@ export default function HomeScreen() {
       );
 
       const snapshot = await getDocs(q);
-      const newTimers = [];
-
-      for (const session of snapshot.docs) {
+      const newTimers = snapshot.docs.map(session => {
         const data = session.data();
         const start = data.startTime.toMillis();
         const end = start + data.duration * 1000 * 60;
-        const secondsLeft = Math.max(0, Math.floor((end - Date.now()) / 1000));
+        const secondsLeft = Math.floor((end - Date.now()) / 1000);
 
-        newTimers.push({
+        return {
           id: session.id,
           machineName: `${data.machineType} No.${data.machineIndex}`,
           remaining: secondsLeft,
           machineId: data.machineId,
-          reminderId: data.reminderId,
-          sessionId: session.id,
-        });
+          reminderId: data.reminderId
+        };
+      });
 
-        if (secondsLeft === 0) {
-          await updateDoc(doc(db, 'laundry_sessions', session.id), { status: 'complete' });
-          await updateDoc(doc(db, 'machines', data.machineId), { availability: true });
-        }
-      }
       setTimers(newTimers);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -220,7 +218,7 @@ export default function HomeScreen() {
   const formatTime = (seconds) => {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;
-    return `${min}:${String(sec).padStart(2, '0')}`;
+    return seconds <= 0 ? `Time is up!` : `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   };
 
   return (
@@ -276,7 +274,7 @@ export default function HomeScreen() {
                     onPress={() => handleStopMachine(timer)}
                   >
                     <Text style={styles.buttonText}>
-                      {timer.remaining === 0 ? 'Collect' : 'Cancel'}
+                      {timer.remaining <= 0 ? 'Collect' : 'Cancel'}
                     </Text>
                   </TouchableOpacity>
                 </View>
